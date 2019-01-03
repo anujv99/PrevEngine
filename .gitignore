@@ -1,5 +1,5 @@
 .vs/*
 bin*/*
 *.sln
-PrevEngine/*.vcxproj*
-Sandbox/*.vcxprox*
+PrevEngine/*.vcxproj.*
+Sandbox/*.vcxproj.*
