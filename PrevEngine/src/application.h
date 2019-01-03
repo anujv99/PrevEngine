@@ -3,6 +3,7 @@
 #include "engine/window.h"
 
 #include "engine/events/applicationevent.h"
+#include "essentials/input.h"
 
 namespace prev {
 
@@ -17,7 +18,8 @@ namespace prev {
 	private:
 		bool OnWindowClose(WindowCloseEvent &e);
 
-		std::unique_ptr<Window> m_Window;
+		std::shared_ptr<Window> m_Window;
+		std::unique_ptr<Input> m_Input;
 		bool m_Running = true;
 	};
 

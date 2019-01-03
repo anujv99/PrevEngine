@@ -2,11 +2,13 @@
 
 #include "API/api.h"
 #include "engine/window.h"
+#include "essentials/input.h"
 
 namespace prev { namespace windows {
 
 	class WindowsWindow : public Window {
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		friend class Input;
 	public:
 		WindowsWindow(const WindowProps &props);
 		virtual ~WindowsWindow();
@@ -22,8 +24,12 @@ namespace prev { namespace windows {
 
 		void CreateOpenGLContext() override;
 		void CreateDirectXContext() override;
+
 	private:
+		bool IsKeyDown(int keyCode) override;
 		virtual void ShutDown();
+		std::map<int, int> m_KeyMap;
+		std::map<int, int> m_ReverseKeyMap;
 	private:
 		struct WindowData {
 			std::string title;

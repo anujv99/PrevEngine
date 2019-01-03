@@ -52,15 +52,21 @@ namespace prev {
 			}
 			case WM_KEYDOWN:
 			{
-				bool repeatCount = (lParam & 0x40000000);
-				KeyPressedEvent event(wParam, repeatCount);
-				s_WindowPointer->m_Data.eventCallback(event);
+				try {
+					int keyCode = s_WindowPointer->m_ReverseKeyMap.at(wParam);
+					bool repeatCount = (lParam & 0x40000000);
+					KeyPressedEvent event(keyCode, repeatCount);
+					s_WindowPointer->m_Data.eventCallback(event);
+				} catch(std::exception &e) {}
 				break;
 			}
 			case WM_KEYUP:
 			{
-				KeyReleasedEvent event(wParam);
-				s_WindowPointer->m_Data.eventCallback(event);
+				try {
+					int keyCode = s_WindowPointer->m_ReverseKeyMap.at(wParam);
+					KeyReleasedEvent event(keyCode);
+					s_WindowPointer->m_Data.eventCallback(event);
+				} catch(std::exception &e) {}
 				break;
 			}
 			case WM_LBUTTONDOWN:
@@ -202,6 +208,63 @@ namespace prev {
 
 			ShowWindow(hWnd, SW_SHOWNORMAL);
 			UpdateWindow(hWnd);
+
+			{
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_A] = 0x41;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_B] = 0x42;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_C] = 0x43;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_D] = 0x44;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_E] = 0x45;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_F] = 0x46;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_G] = 0x47;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_H] = 0x48;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_I] = 0x49;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_J] = 0x4A;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_K] = 0x4B;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_L] = 0x4C;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_M] = 0x4D;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_N] = 0x4E;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_O] = 0x4F;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_P] = 0x50;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Q] = 0x51;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_R] = 0x52;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_S] = 0x53;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_T] = 0x54;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_U] = 0x55;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_V] = 0x56;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_W] = 0x57;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_X] = 0x58;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Y] = 0x59;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Z] = 0x5A;
+			}
+			{
+				m_ReverseKeyMap[0x41] = keyboard::PV_KEYBOARD_KEY_A;
+				m_ReverseKeyMap[0x42] = keyboard::PV_KEYBOARD_KEY_B;
+				m_ReverseKeyMap[0x43] = keyboard::PV_KEYBOARD_KEY_C;
+				m_ReverseKeyMap[0x44] = keyboard::PV_KEYBOARD_KEY_D;
+				m_ReverseKeyMap[0x45] = keyboard::PV_KEYBOARD_KEY_E;
+				m_ReverseKeyMap[0x46] = keyboard::PV_KEYBOARD_KEY_F;
+				m_ReverseKeyMap[0x47] = keyboard::PV_KEYBOARD_KEY_G;
+				m_ReverseKeyMap[0x48] = keyboard::PV_KEYBOARD_KEY_H;
+				m_ReverseKeyMap[0x49] = keyboard::PV_KEYBOARD_KEY_I;
+				m_ReverseKeyMap[0x4A] = keyboard::PV_KEYBOARD_KEY_J;
+				m_ReverseKeyMap[0x4B] = keyboard::PV_KEYBOARD_KEY_K;
+				m_ReverseKeyMap[0x4C] = keyboard::PV_KEYBOARD_KEY_L;
+				m_ReverseKeyMap[0x4D] = keyboard::PV_KEYBOARD_KEY_M;
+				m_ReverseKeyMap[0x4E] = keyboard::PV_KEYBOARD_KEY_N;
+				m_ReverseKeyMap[0x4F] = keyboard::PV_KEYBOARD_KEY_O;
+				m_ReverseKeyMap[0x50] = keyboard::PV_KEYBOARD_KEY_P;
+				m_ReverseKeyMap[0x51] = keyboard::PV_KEYBOARD_KEY_Q;
+				m_ReverseKeyMap[0x52] = keyboard::PV_KEYBOARD_KEY_R;
+				m_ReverseKeyMap[0x53] = keyboard::PV_KEYBOARD_KEY_S;
+				m_ReverseKeyMap[0x54] = keyboard::PV_KEYBOARD_KEY_T;
+				m_ReverseKeyMap[0x55] = keyboard::PV_KEYBOARD_KEY_U;
+				m_ReverseKeyMap[0x56] = keyboard::PV_KEYBOARD_KEY_V;
+				m_ReverseKeyMap[0x57] = keyboard::PV_KEYBOARD_KEY_W;
+				m_ReverseKeyMap[0x58] = keyboard::PV_KEYBOARD_KEY_X;
+				m_ReverseKeyMap[0x59] = keyboard::PV_KEYBOARD_KEY_Y;
+				m_ReverseKeyMap[0x5A] = keyboard::PV_KEYBOARD_KEY_Z;
+			}
 		}
 
 		WindowsWindow::~WindowsWindow() {
@@ -233,6 +296,15 @@ namespace prev {
 
 		void WindowsWindow::CreateDirectXContext() {
 			
+		}
+
+		bool WindowsWindow::IsKeyDown(int keyCode) {
+			SHORT keyState = GetAsyncKeyState(m_KeyMap[keyCode]);
+			if((1 << 15) & keyState) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 
 		void WindowsWindow::ShutDown() {

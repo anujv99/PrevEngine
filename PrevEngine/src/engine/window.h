@@ -32,6 +32,8 @@ namespace prev {
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 
+		virtual bool IsKeyDown(int keyCode) = 0;
+
 		virtual void CreateOpenGLContext() = 0;
 		virtual void CreateDirectXContext() = 0;
 
