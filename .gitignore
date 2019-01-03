@@ -2,4 +2,6 @@
 bin*/*
 *.sln
 PrevEngine/*.vcxproj*
+PrevEngine/*.vcxproj.*
 Sandbox/*.vcxproj*
+Sandbox/*.vcxproj.*
