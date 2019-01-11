@@ -1,6 +1,7 @@
 #pragma once
 
 #include "engine/events/keyevent.h"
+#include "engine/events/mouseevent.h"
 #include "engine/window.h"
 
 #define MAX_KEYBOARD_KEYS 500
@@ -9,7 +10,7 @@ namespace prev {
 	
 	namespace keyboard {
 		enum KeyboardKeys {
-			PV_KEYBOARD_KEY_A,
+			PV_KEYBOARD_KEY_A = 0x100,
 			PV_KEYBOARD_KEY_B,
 			PV_KEYBOARD_KEY_C,
 			PV_KEYBOARD_KEY_D,
@@ -53,21 +54,27 @@ namespace prev {
 		};
 	}
 
-	class Input {
+	class Input final {
+		friend class Application;
 	public:
 		Input(std::shared_ptr<Window> win);
 		~Input();
 
-		void Update();
-
-		bool IsKeyDown(int keyCode);
-		bool IsKeyPressed(int keyCode);
-		bool IsKeyUp(int keyCode);
-		bool IsKeyReleased(int keyCode);
+		static bool IsKeyDown(int keyCode);
+		static bool IsKeyPressed(int keyCode);
+		static bool IsKeyUp(int keyCode);
+		static bool IsKeyReleased(int keyCode);
 	private:
-		std::shared_ptr<Window> m_Window;
+		void OnUpdate();
+		void OnEvent(EventDispatcher &dispatcher);
+		bool MouseMovedCallback(MouseMovedEvent &e);
+		bool MouseScrolledCallback(MouseScrolledEvent &e);
 	private:
-		bool m_KeyboardKeys[MAX_KEYBOARD_KEYS];
+		static std::shared_ptr<Window> m_Window;
+		static bool m_KeyboardKeys[MAX_KEYBOARD_KEYS];
+		static int m_MouseXPos, m_MouseYPos;
+		static int m_MouseDeltaXPos, m_MouseDeltaYPos;
+		static int m_MouseScrollDelta;
 	};
 
 }

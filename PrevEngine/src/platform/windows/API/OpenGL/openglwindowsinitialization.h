@@ -8,7 +8,7 @@ namespace prev { namespace windows { namespace opengl {
 	public:
 		OpenGLAPI() : GraphicsAPI() {}
 		~OpenGLAPI();
-		void Init(HWND windowHandle) override;
+		void Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) override;
 		void Update() override;
 		void Delete() override;
 		void SetVsync(bool enbaled) override;

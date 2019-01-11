@@ -8,7 +8,7 @@ namespace prev { namespace windows { namespace opengl {
 	OpenGLAPI::~OpenGLAPI() {
 		Delete();
 	}
-	void OpenGLAPI::Init(HWND windowHandle) {
+	void OpenGLAPI::Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) {
 		m_PFD = {
 				sizeof(PIXELFORMATDESCRIPTOR),
 				1,
@@ -48,9 +48,9 @@ namespace prev { namespace windows { namespace opengl {
 			void * p = (void *)wglGetProcAddress(func);
 			if(p == 0 ||
 				(p == (void*)0x1) ||
-			   (p == (void*)0x2) ||
-			   (p == (void*)0x3) ||
-			   (p == (void*)-1)) {
+			    (p == (void*)0x2) ||
+			    (p == (void*)0x3) ||
+			    (p == (void*)-1)) {
 				HMODULE module = LoadLibraryA("opengl32.dll");
 				p = (void *)GetProcAddress(module, func);
 			}

@@ -22,3 +22,4 @@
 #endif
 
 #include "engine/log.h"
+#include "engine/assert.h"

@@ -10,7 +10,7 @@ namespace prev { namespace windows {
 		virtual ~GraphicsAPI() {}
 		inline bool IsAPIReady() const { return isReady; }
 
-		virtual void Init(HWND windowHandle) = 0;
+		virtual void Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) = 0;
 		virtual void Update() = 0;
 		virtual void Delete() = 0;
 

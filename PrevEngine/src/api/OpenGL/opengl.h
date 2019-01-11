@@ -1,11 +1,18 @@
 #pragma once
 
-namespace windows { namespace opengl {
+#include "../api.h"
 
-	class OpenGL {
+namespace prev { namespace graphicsapi { namespace opengl {
+
+	class OpenGL : public API {
 	public:
-		OpenGL();
+		OpenGL(unsigned int windowWidth, unsigned int windowHeight);
 		~OpenGL();
+
+		void OnUpdate() override;
+		void OnEvent(EventDispatcher &dispatcher) override;
+	private:
+		void SetViewport() override;
 	};
 
-} }
+} } }

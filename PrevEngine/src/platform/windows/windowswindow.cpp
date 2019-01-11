@@ -4,7 +4,6 @@
 #include "engine/events/applicationevent.h"
 #include "engine/events/keyevent.h"
 #include "engine/events/mouseevent.h"
-#include "engine/assert.h"
 
 #include "misc.h"
 #include "API/DirectX/directxwindowsinitization.h"
@@ -287,15 +286,16 @@ namespace prev {
 			return m_Data.vSync;
 		}
 
-		void WindowsWindow::CreateOpenGLContext() 
-		{
-			m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new opengl::OpenGLAPI);
-			m_GraphicsAPI->Init(hWnd);
+		void WindowsWindow::CreateOpenGLContext() {
+			m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new opengl::OpenGLAPI());
+			m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
 			PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
 		}
 
 		void WindowsWindow::CreateDirectXContext() {
-			
+			m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new directx::DirectX());
+			m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
+			PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
 		}
 
 		bool WindowsWindow::IsKeyDown(int keyCode) {
