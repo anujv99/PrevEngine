@@ -7,10 +7,23 @@ namespace prev {
 	std::chrono::time_point<std::chrono::steady_clock> Timer::m_Time = std::chrono::high_resolution_clock::now();
 	std::chrono::time_point<std::chrono::steady_clock> Timer::m_StartTime = std::chrono::high_resolution_clock::now();
 
+	unsigned int Timer::m_FPS						= 0;
+	unsigned long long int Timer::m_LastTimeSec		= 0;
+	bool Timer::shouldShowFPS						= false;
+
 	void Timer::Update() {
 		auto currentTime = std::chrono::high_resolution_clock::now();
 		m_DeltaTime = currentTime - m_Time;
 		m_Time = currentTime;
+		m_FPS++;
+		if ((unsigned long long int)GetTime() > m_LastTimeSec) {
+			m_LastTimeSec++;
+			if (shouldShowFPS) {
+				PV_CORE_INFO("[FPS = %d]", m_FPS);
+			}
+			m_FPS = 0;
+		}
+		
 	}
 
 	float Timer::GetTime() {
@@ -22,13 +35,22 @@ namespace prev {
 		return m_DeltaTime.count();
 	}
 
-	TimeThis::TimeThis() {
+	void Timer::FPSCounter(bool isVisible) {
+		shouldShowFPS = isVisible;
+	}
+
+	TimeThis::TimeThis(bool timeInMs) {
 		m_Start = std::chrono::high_resolution_clock::now();
+		isMS = timeInMs;
 	}
 
 	TimeThis::~TimeThis() {
 		std::chrono::duration<float> deltaTime = std::chrono::high_resolution_clock::now() - m_Start;
-		std::cout << deltaTime.count() << std::endl;
+		if (isMS) {
+			PV_CORE_WARN("This Scope Took : %.3fms", deltaTime.count() * 1000);
+		} else {
+			PV_CORE_WARN("This Scope Took : %fs", deltaTime.count());
+		}
 	}
 
 }

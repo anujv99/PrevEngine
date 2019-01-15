@@ -22,7 +22,8 @@ namespace prev {
 		m_Window->CreateDirectXContext();
 #endif
 		// Create Graphics Class based on api
-		m_GraphicsAPI = std::unique_ptr<API>(API::Create(m_Window->GetWidth(), m_Window->GetHeight())); 
+		m_GraphicsAPI = std::unique_ptr<API>(API::Create(m_Window->GetWidth(), m_Window->GetHeight()));
+		Timer::FPSCounter(true);
 	}
 
 	Application::~Application() {

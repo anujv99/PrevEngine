@@ -9,6 +9,13 @@ workspace "PrevEngine"
 
 outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/"
 
+IncludeDir = {}
+IncludeDir["GLAD"] = "PrevEngine/vendor/GLAD/include"
+IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
+
+include "PrevEngine/vendor/GLAD"
+include "PrevEngine/vendor/ImGui"
+
 project "PrevEngine"
     location "PrevEngine"
     kind "StaticLib"
@@ -22,24 +29,20 @@ project "PrevEngine"
 	
 	files {
         "%{prj.name}/src/**.h",
-        "%{prj.name}/src/**.cpp",
-        "%{prj.name}/src/**.c"
-    }
-	
-	files {
-		"vendor/sources/**.c",
-		"vendor/sources/**.cpp",
-		"vendor/sources/**.h"
+        "%{prj.name}/src/**.cpp"
     }
 	
     includedirs {
         "%{prj.name}/src",
-		"vendor/includes"
+		"%{IncludeDir.GLAD}",
+		"%{IncludeDir.ImGui}"
     }
-
-	filter "files:**.c"
-		flags { "NoPCH" }
 	
+	links {
+		"GLAD",
+		"ImGui"
+	}
+
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
@@ -48,7 +51,7 @@ project "PrevEngine"
         defines {
             "PV_PLATFORM_WINDOWS",
             "PV_BUILD_LIB",
-			"PV_RENDERING_API_OPENGL",
+			"PV_RENDERING_API_OPENGL", --Use PV_RENDERING_API_DIRECTX for directx 11
 			"PV_ENABLE_ASSERTS"
         }
 

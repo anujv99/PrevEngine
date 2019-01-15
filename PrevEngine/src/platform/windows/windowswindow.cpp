@@ -271,7 +271,7 @@ namespace prev {
 		}
 
 		void WindowsWindow::OnUpdate() {
-			if(PeekMessage(&msg, hWnd, NULL, NULL, PM_REMOVE)) {
+			while (PeekMessage(&msg, hWnd, NULL, NULL, PM_REMOVE)) {
 				TranslateMessage(&msg);
 				DispatchMessage(&msg);
 			}
@@ -287,15 +287,19 @@ namespace prev {
 		}
 
 		void WindowsWindow::CreateOpenGLContext() {
-			m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new opengl::OpenGLAPI());
-			m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
-			PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
+			#ifdef PV_RENDERING_API_OPENGL
+				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new opengl::OpenGLAPI());
+				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
+				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
+			#endif
 		}
 
 		void WindowsWindow::CreateDirectXContext() {
-			m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new directx::DirectX());
-			m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
-			PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
+			#ifdef PV_RENDERING_API_DIRECTX
+				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new directx::DirectX());
+				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
+				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
+			#endif
 		}
 
 		bool WindowsWindow::IsKeyDown(int keyCode) {
@@ -308,7 +312,8 @@ namespace prev {
 		}
 
 		void WindowsWindow::ShutDown() {
-			wglDeleteContext(ourOpenGLRenderingContext);
+			DestroyWindow(hWnd);
+			m_GraphicsAPI->Delete();
 			PostQuitMessage(0);
 		}
 

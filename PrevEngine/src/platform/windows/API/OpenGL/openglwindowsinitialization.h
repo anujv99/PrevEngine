@@ -1,5 +1,7 @@
 #pragma once
 
+#ifdef PV_RENDERING_API_OPENGL
+
 #include "../api.h"
 
 namespace prev { namespace windows { namespace opengl {
@@ -22,3 +24,5 @@ namespace prev { namespace windows { namespace opengl {
 	};
 
 } } }
+
+#endif

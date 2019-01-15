@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "openglwindowsinitialization.h"
 
+#ifdef PV_RENDERING_API_OPENGL
+
 #include <glad/glad_wgl.h>
 #include <glad/glad.h>
 
@@ -74,7 +76,6 @@ namespace prev { namespace windows { namespace opengl {
 
 	void OpenGLAPI::Update() {
 		SwapBuffers(m_HandleToDeviceContext);
-		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 	void OpenGLAPI::Delete() {
@@ -107,3 +108,5 @@ namespace prev { namespace windows { namespace opengl {
 	}
 
 } } }
+
+#endif

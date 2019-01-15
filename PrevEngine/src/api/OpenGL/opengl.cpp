@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "opengl.h"
 
+#ifdef PV_RENDERING_API_OPENGL
+
 #include <glad/glad.h>
 
 namespace prev { 
@@ -34,3 +36,5 @@ namespace prev {
 
 	} }
 }
+
+#endif
