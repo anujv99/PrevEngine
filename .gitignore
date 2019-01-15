@@ -5,3 +5,6 @@ PrevEngine/*.vcxproj*
 PrevEngine/*.vcxproj.*
 Sandbox/*.vcxproj*
 Sandbox/*.vcxproj.*
+PrevEngine/vendor/*/*.vcxproj*
+PrevEngine/vendor/*/*.vcxproj.*
+PrevEngine/vendor/*/bin*/*
