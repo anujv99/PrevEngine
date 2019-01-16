@@ -74,6 +74,8 @@
         Too many extensions
 */
 
+#ifdef PV_PLATFORM_WINDOWS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -744,4 +746,6 @@ int gladLoadWGLLoader(GLADloadproc load, HDC hdc) {
 	load_WGL_OML_sync_control(load);
 	return 1;
 }
+
+#endif
 

@@ -1,6 +1,5 @@
 #include "pch.h"
-#include <gl/GL.h>
-#include <src/prev.h>
+#include <prev.h>
 
 using namespace prev;
 

@@ -1,5 +1,4 @@
 #pragma once
-#include <vld.h>
 #include "engine/window.h"
 #include "api/api.h"
 
@@ -25,7 +24,7 @@ namespace prev {
 
 		std::shared_ptr<Window> m_Window;
 		std::shared_ptr<Input> m_Input;
-		std::unique_ptr<API> m_GraphicsAPI;
+		//std::unique_ptr<API> m_GraphicsAPI;
 
 		LayerStack m_LayerStack;
 

@@ -74,6 +74,7 @@
         Too many extensions
 */
 
+#ifdef PV_PLATFORM_WINDOWS
 
 #ifndef WINAPI
 #ifndef WIN32_LEAN_AND_MEAN
@@ -999,6 +1000,8 @@ GLAPI PFNWGLWAITFORSBCOMLPROC glad_wglWaitForSbcOML;
 
 #ifdef __cplusplus
 }
+#endif
+
 #endif
 
 #endif

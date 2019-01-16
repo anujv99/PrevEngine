@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "adapterreader.h"
 
-#ifdef PV_RENDERING_API_DIRECTX
-
 namespace prev { namespace windows { namespace directx {
 
 	std::vector<AdapterData> AdapterReader::m_Adapters;
@@ -36,5 +34,3 @@ namespace prev { namespace windows { namespace directx {
 	}
 
 } } }
-
-#endif

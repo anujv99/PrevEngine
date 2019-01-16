@@ -4,10 +4,13 @@
 	#include "platform/windows/misc.h"
 #endif
 
-namespace prev {
-	#define LOG(...) printf(__VA_ARGS__)
+#ifdef PV_PLATFORM_LINUX
+	#include "platform/linux/misc.h"
+#endif
 
+namespace prev {
 	#ifdef PV_PLATFORM_WINDOWS
+		#define LOG(...) printf(__VA_ARGS__)
 		#ifdef PV_BUILD_LIB
 			#define PV_CORE_TRACE(...)		windows::ChangeConsoleColor(windows::CYAN);		LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); windows::ChangeConsoleColor(windows::NORMAL)
 			#define PV_CORE_INFO(...)		windows::ChangeConsoleColor(windows::GREEN);	LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); windows::ChangeConsoleColor(windows::NORMAL)
@@ -21,11 +24,22 @@ namespace prev {
 			#define PV_ERROR(...)		windows::ChangeConsoleColor(windows::RED);		LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); windows::ChangeConsoleColor(windows::NORMAL)
 			#define PV_CRITICAL(...)	windows::ChangeConsoleColor(windows::RED_OVER);	LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); windows::ChangeConsoleColor(windows::NORMAL)
 		#endif
-	#else
-		#define PV_CORE_TRACE(...)		LOG(__VA_ARGS__)
-		#define PV_CORE_INFO(...)		LOG(__VA_ARGS__)
-		#define PV_CORE_WARN(...)		LOG(__VA_ARGS__)
-		#define PV_CORE_ERROR(...)		LOG(__VA_ARGS__)
-		#define PV_CORE_CRITICAL(...)	LOG(__VA_ARGS__)
+	#endif
+
+	#ifdef PV_PLATFORM_LINUX
+		#define LOG(fmt, ...) printf(fmt, ##__VA_ARGS__)
+		#ifdef PV_BUILD_LIB
+			#define PV_CORE_TRACE(fmt, ...)		linux::ChangeConsoleColor(linux::CYAN);		LOG("[PREV_ENGINE] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_CORE_INFO(fmt, ...)		linux::ChangeConsoleColor(linux::GREEN);	LOG("[PREV_ENGINE] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_CORE_WARN(fmt, ...)		linux::ChangeConsoleColor(linux::YELLOW);	LOG("[PREV_ENGINE] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_CORE_ERROR(fmt, ...)		linux::ChangeConsoleColor(linux::RED);		LOG("[PREV_ENGINE] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_CORE_CRITICAL(fmt, ...)	linux::ChangeConsoleColor(linux::RED_OVER);	LOG("[PREV_ENGINE] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+		#else
+			#define PV_TRACE(fmt, ...)		linux::ChangeConsoleColor(linux::CYAN);		LOG("[APP] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_INFO(fmt, ...)		linux::ChangeConsoleColor(linux::GREEN);	LOG("[APP] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_WARN(fmt, ...)		linux::ChangeConsoleColor(linux::YELLOW);	LOG("[APP] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_ERROR(fmt, ...)		linux::ChangeConsoleColor(linux::RED);		LOG("[APP] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+			#define PV_CRITICAL(fmt, ...)	linux::ChangeConsoleColor(linux::RED_OVER);	LOG("[APP] "); LOG(fmt, ##__VA_ARGS__); LOG("\n"); linux::ChangeConsoleColorToNormal()
+		#endif
 	#endif
 }

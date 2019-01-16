@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "openglwindowsinitialization.h"
 
-#ifdef PV_RENDERING_API_OPENGL
-
 #include <glad/glad_wgl.h>
 #include <glad/glad.h>
 
@@ -108,5 +106,3 @@ namespace prev { namespace windows { namespace opengl {
 	}
 
 } } }
-
-#endif

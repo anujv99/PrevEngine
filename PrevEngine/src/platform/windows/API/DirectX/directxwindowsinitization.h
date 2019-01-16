@@ -1,7 +1,5 @@
 #pragma once
 
-#ifdef PV_RENDERING_API_DIRECTX
-
 #include "../api.h"
 #include <d3d11.h>
 #include <wrl/client.h>
@@ -28,5 +26,3 @@ namespace prev { namespace windows { namespace directx {
 	};
 
 } } }
-
-#endif

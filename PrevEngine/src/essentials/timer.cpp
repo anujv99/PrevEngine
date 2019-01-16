@@ -4,8 +4,8 @@
 namespace prev {
 
 	std::chrono::duration<float> Timer::m_DeltaTime;
-	std::chrono::time_point<std::chrono::steady_clock> Timer::m_Time = std::chrono::high_resolution_clock::now();
-	std::chrono::time_point<std::chrono::steady_clock> Timer::m_StartTime = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> Timer::m_Time = std::chrono::high_resolution_clock::now();
+	std::chrono::time_point<std::chrono::system_clock> Timer::m_StartTime = std::chrono::high_resolution_clock::now();
 
 	unsigned int Timer::m_FPS						= 0;
 	unsigned long long int Timer::m_LastTimeSec		= 0;

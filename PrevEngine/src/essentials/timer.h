@@ -13,7 +13,7 @@ namespace prev {
 		static void FPSCounter(bool isVisible);
 	private:
 		static std::chrono::duration<float> m_DeltaTime;
-		static std::chrono::time_point<std::chrono::steady_clock> m_Time, m_StartTime;
+		static std::chrono::time_point<std::chrono::system_clock> m_Time, m_StartTime;
 		static unsigned int m_FPS;
 		static unsigned long long int m_LastTimeSec;
 		static bool shouldShowFPS;
@@ -25,7 +25,7 @@ namespace prev {
 		TimeThis(bool timeInMs = false);
 		~TimeThis();
 	private:
-		std::chrono::time_point<std::chrono::steady_clock> m_Start;
+		std::chrono::time_point<std::chrono::system_clock> m_Start;
 		bool isMS;
 	};
 

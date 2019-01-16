@@ -8,3 +8,5 @@ Sandbox/*.vcxproj.*
 PrevEngine/vendor/*/*.vcxproj*
 PrevEngine/vendor/*/*.vcxproj.*
 PrevEngine/vendor/*/bin*/*
+Makefile
+Makefile.in

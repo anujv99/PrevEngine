@@ -25,7 +25,6 @@ project "PrevEngine"
     objdir ("bin-int/" .. outputDir .. "%{prj.name}")
 
 	pchheader "pch.h"
-	pchsource "PrevEngine/src/pch.cpp"
 	
 	files {
         "%{prj.name}/src/**.h",
@@ -43,6 +42,30 @@ project "PrevEngine"
 		"ImGui"
 	}
 
+	filter "system:linux"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines {
+            "PV_PLATFORM_LINUX",
+            "PV_BUILD_LIB",
+			"PV_RENDERING_API_OPENGL", --Use PV_RENDERING_API_DIRECTX for directx 11
+			"PV_ENABLE_ASSERTS"
+		}
+		
+		libdirs { os.findlib("X11") }
+
+		links {
+			"X11"
+		}
+
+		removefiles {
+			"%{prj.name}/src/platform/windows/**.cpp",
+			"%{prj.name}/src/platform/windows/**.h",
+			"%{prj.name}/src/platform/windows/**.c"
+		}
+
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
@@ -53,7 +76,13 @@ project "PrevEngine"
             "PV_BUILD_LIB",
 			"PV_RENDERING_API_OPENGL", --Use PV_RENDERING_API_DIRECTX for directx 11
 			"PV_ENABLE_ASSERTS"
-        }
+		}
+		
+		removefiles {
+			"%{prj.name}/src/platform/linux/**.cpp",
+			"%{prj.name}/src/platform/linux/**.h",
+			"%{prj.name}/src/platform/linux/**.c"
+		}
 
     filter "configurations:Debug"
         defines "PV_DEBUG"
@@ -76,7 +105,6 @@ project "Sandbox"
     objdir ("bin-int/" .. outputDir .. "%{prj.name}")
 	
 	pchheader "pch.h"
-	pchsource "Sandbox/src/pch.cpp"
 	
 	files {
 		"%{prj.name}/src/**.h",
@@ -84,7 +112,7 @@ project "Sandbox"
 	}
 	
 	includedirs {
-		"PrevEngine",
+		"PrevEngine/src",
 		"%{prj.name}/src"
     }
 	
@@ -92,6 +120,22 @@ project "Sandbox"
 		"PrevEngine"
 	}
 	
+	filter "system:linux"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines {
+            "PV_PLATFORM_LINUX"
+		}
+		
+		libdirs { os.findlib("X11") }
+
+		links {
+			"PrevEngine",
+			"X11"
+		}
+
 	filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
