@@ -10,5 +10,3 @@ PrevEngine/vendor/*/*.vcxproj.*
 PrevEngine/vendor/*/bin*/*
 Makefile
 Makefile.in
-.codelite/*
-.vscode/*
