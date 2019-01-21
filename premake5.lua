@@ -1,3 +1,18 @@
+GCC_PATH = "" --provide gcc path if not added ni path
+
+local gcc = premake.tools.gcc
+gcc.tools = {
+	cc = GCC_PATH .. "gcc",
+	cxx = GCC_PATH .."g++",
+	ar = GCC_PATH .. "ar"
+}
+
+function gcc.gettoolname(cfg, tool)
+	return gcc.tools[tool]
+end
+
+--Finish Setting up gcc
+
 workspace "PrevEngine"
     architecture "x64"
 
@@ -16,6 +31,20 @@ IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 
+--[[
+Rendering API supported	 | renderingAPI
+DirectX 				 | PV_RENDERING_API_DIRECTX
+OpenGL					 | PV_RENDERING_API_OPENGL
+]]--
+renderingAPI = "PV_RENDERING_API_OPENGL"
+
+--[[
+Platform supported		| platform 
+Window					| PV_PLATFORM_WINDOWS
+linux					| PV_PLATFORM_LINUX
+]]--
+platform = "PV_PLATFORM_WINDOWS"
+
 project "PrevEngine"
     location "PrevEngine"
     kind "StaticLib"
@@ -24,8 +53,6 @@ project "PrevEngine"
     targetdir ("bin/" .. outputDir .. "%{prj.name}")
     objdir ("bin-int/" .. outputDir .. "%{prj.name}")
 
-	pchheader "pch.h"
-	
 	files {
         "%{prj.name}/src/**.h",
         "%{prj.name}/src/**.cpp"
@@ -46,11 +73,15 @@ project "PrevEngine"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
-
+		
+		if (renderingAPI ~= "PV_RENDERING_API_OPENGL" and platform == "PV_PLATFORM_LINUX") then
+			error("Can's use directx on linux")
+		end
+		
 		defines {
-            "PV_PLATFORM_LINUX",
+            platform,
             "PV_BUILD_LIB",
-			"PV_RENDERING_API_OPENGL", --Use PV_RENDERING_API_DIRECTX for directx 11
+			renderingAPI,
 			"PV_ENABLE_ASSERTS"
 		}
 		
@@ -61,10 +92,11 @@ project "PrevEngine"
 		}
 
 		removefiles {
-			"%{prj.name}/src/platform/windows/**.cpp",
-			"%{prj.name}/src/platform/windows/**.h",
-			"%{prj.name}/src/platform/windows/**.c"
+			"%{prj.name}/src/platform/windows/*",
+			"%{prj.name}/src/api/DirectX/*"
 		}
+		
+		pchheader "pch.h"
 
     filter "system:windows"
         cppdialect "C++17"
@@ -72,17 +104,20 @@ project "PrevEngine"
         systemversion "latest"
 
         defines {
-            "PV_PLATFORM_WINDOWS",
+            platform,
             "PV_BUILD_LIB",
-			"PV_RENDERING_API_OPENGL", --Use PV_RENDERING_API_DIRECTX for directx 11
+			renderingAPI,
 			"PV_ENABLE_ASSERTS"
 		}
 		
 		removefiles {
-			"%{prj.name}/src/platform/linux/**.cpp",
-			"%{prj.name}/src/platform/linux/**.h",
-			"%{prj.name}/src/platform/linux/**.c"
+			"%{prj.name}/src/platform/linux/*",
 		}
+		
+		pchheader "pch.h"
+		
+	filter "action:vs*"
+		pchsource "PrevEngine/src/pch.cpp"
 
     filter "configurations:Debug"
         defines "PV_DEBUG"
@@ -104,8 +139,6 @@ project "Sandbox"
 	targetdir ("bin/" .. outputDir .. "%{prj.name}")
     objdir ("bin-int/" .. outputDir .. "%{prj.name}")
 	
-	pchheader "pch.h"
-	
 	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
@@ -126,7 +159,7 @@ project "Sandbox"
 		systemversion "latest"
 
 		defines {
-            "PV_PLATFORM_LINUX"
+            platform
 		}
 		
 		libdirs { os.findlib("X11") }
@@ -135,6 +168,8 @@ project "Sandbox"
 			"PrevEngine",
 			"X11"
 		}
+		
+		pchheader "pch.h"
 
 	filter "system:windows"
         cppdialect "C++17"
@@ -142,8 +177,13 @@ project "Sandbox"
         systemversion "latest"
 
         defines {
-            "PV_PLATFORM_WINDOWS"
+            platform
         }
+		
+		pchheader "pch.h"
+		
+	filter "action:vs*"
+		pchsource "Sandbox/src/pch.cpp"
 	
 	filter "configurations:Debug"
 		defines "PV_DEBGU"

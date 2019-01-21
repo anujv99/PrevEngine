@@ -4,8 +4,8 @@
 namespace prev {
 
 	std::chrono::duration<float> Timer::m_DeltaTime;
-	std::chrono::time_point<std::chrono::system_clock> Timer::m_Time = std::chrono::high_resolution_clock::now();
-	std::chrono::time_point<std::chrono::system_clock> Timer::m_StartTime = std::chrono::high_resolution_clock::now();
+	pv_time_point Timer::m_Time = std::chrono::high_resolution_clock::now();
+	pv_time_point Timer::m_StartTime = std::chrono::high_resolution_clock::now();
 
 	unsigned int Timer::m_FPS						= 0;
 	unsigned long long int Timer::m_LastTimeSec		= 0;
@@ -19,7 +19,7 @@ namespace prev {
 		if ((unsigned long long int)GetTime() > m_LastTimeSec) {
 			m_LastTimeSec++;
 			if (shouldShowFPS) {
-				PV_CORE_INFO("[FPS = %d]", m_FPS);
+				PV_CORE_TRACE("[FPS = %d]", m_FPS);
 			}
 			m_FPS = 0;
 		}

@@ -135,7 +135,7 @@ namespace prev { namespace windows { namespace directx {
 		} break;
 		}
 
-		COM_PTR<#ifdef PV_RENDERING_API_DIRECTXkBuffer;
+		COM_PTR<ID3D11Texture2D> backBuffer;
 		hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
 		if (FAILED(hr)) {
 			PV_CORE_ERROR("Unable to get backbuffer");

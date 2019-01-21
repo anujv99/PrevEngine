@@ -4,6 +4,8 @@
 using namespace prev;
 
 int main() {
+	Log::ShouldShowLogOnTerminal(false);
+	PV_WARN("Using Prev Engine");
 	auto app = new Application();
 	app->Run();
 	delete app;

@@ -48,4 +48,23 @@ namespace prev {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
+	class CharacterEvent : public Event {
+	public:
+		CharacterEvent(unsigned char pressedChar) :
+			m_PressedChar(pressedChar) {}
+
+		inline char GetPressedChar() const { return m_PressedChar; }
+
+		std::string ToString() const override {
+			std::string str;
+			str = m_PressedChar;
+			return str;
+		}
+
+		EVENT_CLASS_TYPE(CharacterInput)
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+	private:
+		unsigned char m_PressedChar;
+	};
+
 }

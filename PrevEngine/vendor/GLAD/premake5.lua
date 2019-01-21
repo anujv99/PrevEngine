@@ -17,6 +17,12 @@ project "GLAD"
 		"include"
 	}
 	
+	filter "system:linux"
+		removefiles {
+			"include/glad/glad_wgl.h",
+			"source/glad_wgl.c"
+		}
+	
 	filter "system:windows"
         systemversion "latest"
         staticruntime "On"

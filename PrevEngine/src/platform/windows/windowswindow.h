@@ -25,16 +25,19 @@ namespace prev { namespace windows {
 		void CreateOpenGLContext() override;
 		void CreateDirectXContext() override;
 
+		void ChangeCursor(CursorType type) override;
 	private:
 		bool IsKeyDown(int keyCode) override;
 		virtual void ShutDown();
 		std::map<int, int> m_KeyMap;
 		std::map<int, int> m_ReverseKeyMap;
+		std::map<CursorType, LPWSTR> m_CursorMap;
 	private:
 		struct WindowData {
 			std::string title;
 			unsigned int width, height;
 			bool vSync;
+			CursorType cType;
 
 			EventCallbackFn eventCallback = nullptr;
 		};

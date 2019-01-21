@@ -11,6 +11,8 @@
 
 #include "essentials/input.h"
 
+#define MOUSE_SCROLL_FACTOR 0.01f
+
 namespace prev {
 
 	Window * Window::Create(const WindowProps &props) {
@@ -46,6 +48,12 @@ namespace prev {
 			{
 				if(s_WindowPointer->m_Data.eventCallback == NULL) break;
 				WindowResizeEvent event(LOWORD(lParam), HIWORD(lParam));
+				s_WindowPointer->m_Data.eventCallback(event);
+				break;
+			}
+			case WM_CHAR:
+			{
+				CharacterEvent event((char)wParam);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
@@ -142,8 +150,12 @@ namespace prev {
 			{
 				static float deltaScroll = 0.0f;
 				float xPos = GET_WHEEL_DELTA_WPARAM(wParam);
-				MouseScrolledEvent event(xPos, 0);
+				MouseScrolledEvent event(xPos * MOUSE_SCROLL_FACTOR, 0);
 				s_WindowPointer->m_Data.eventCallback(event);
+				break;
+			}
+			case WM_SETCURSOR:
+			{
 				break;
 			}
 			default:
@@ -169,6 +181,7 @@ namespace prev {
 			m_Data.title = props.Title;
 			m_Data.width = props.Width;
 			m_Data.height = props.Height;
+			m_Data.cType = props.CType; // C = cursor
 
 			WNDCLASSEX wc;
 			HINSTANCE hInstance = 0;
@@ -192,12 +205,15 @@ namespace prev {
 				return;
 			}
 
+			RECT rect = {0, 0, props.Width, props.Height };
+			AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
+
 			hWnd = CreateWindowEx(
 				WS_EX_CLIENTEDGE,
 				s_WindowClassName,
 				s2ws(props.Title).c_str(),
 				WS_OVERLAPPEDWINDOW,
-				CW_USEDEFAULT, CW_USEDEFAULT, props.Width, props.Height,
+				CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
 				NULL, NULL, hInstance, NULL);
 
 			if(hWnd == NULL) {
@@ -235,6 +251,22 @@ namespace prev {
 				m_KeyMap[keyboard::PV_KEYBOARD_KEY_X] = 0x58;
 				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Y] = 0x59;
 				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Z] = 0x5A;
+
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_LEFT]		= VK_LEFT;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_RIGHT]		= VK_RIGHT;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_UP]			= VK_UP;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_DOWN]		= VK_DOWN;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_ESCAPE]		= VK_ESCAPE;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_TAB]			= VK_TAB;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_INSERT]		= VK_INSERT;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_HOME]		= VK_HOME;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_PAGEUP]		= VK_PRIOR;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_PAGEDOWN]	= VK_NEXT;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_END]			= VK_END;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_DELETE]		= VK_DELETE;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_BACKSPACE]	= VK_BACK;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_SPACE]		= VK_SPACE;
+				m_KeyMap[keyboard::PV_KEYBOARD_KEY_ENTER]		= VK_RETURN;
 			}
 			{
 				m_ReverseKeyMap[0x41] = keyboard::PV_KEYBOARD_KEY_A;
@@ -263,7 +295,35 @@ namespace prev {
 				m_ReverseKeyMap[0x58] = keyboard::PV_KEYBOARD_KEY_X;
 				m_ReverseKeyMap[0x59] = keyboard::PV_KEYBOARD_KEY_Y;
 				m_ReverseKeyMap[0x5A] = keyboard::PV_KEYBOARD_KEY_Z;
+
+				m_ReverseKeyMap[VK_LEFT]	= keyboard::PV_KEYBOARD_KEY_LEFT;
+				m_ReverseKeyMap[VK_RIGHT]	= keyboard::PV_KEYBOARD_KEY_RIGHT;
+				m_ReverseKeyMap[VK_UP]		= keyboard::PV_KEYBOARD_KEY_UP;
+				m_ReverseKeyMap[VK_DOWN]	= keyboard::PV_KEYBOARD_KEY_DOWN;
+				m_ReverseKeyMap[VK_ESCAPE]	= keyboard::PV_KEYBOARD_KEY_ESCAPE;
+				m_ReverseKeyMap[VK_TAB]		= keyboard::PV_KEYBOARD_KEY_TAB;
+				m_ReverseKeyMap[VK_INSERT]	= keyboard::PV_KEYBOARD_KEY_INSERT;
+				m_ReverseKeyMap[VK_HOME]	= keyboard::PV_KEYBOARD_KEY_HOME;
+				m_ReverseKeyMap[VK_PRIOR]	= keyboard::PV_KEYBOARD_KEY_PAGEUP;
+				m_ReverseKeyMap[VK_NEXT]	= keyboard::PV_KEYBOARD_KEY_PAGEDOWN;
+				m_ReverseKeyMap[VK_END]		= keyboard::PV_KEYBOARD_KEY_END;
+				m_ReverseKeyMap[VK_DELETE]	= keyboard::PV_KEYBOARD_KEY_DELETE;
+				m_ReverseKeyMap[VK_BACK]	= keyboard::PV_KEYBOARD_KEY_BACKSPACE;
+				m_ReverseKeyMap[VK_SPACE]	= keyboard::PV_KEYBOARD_KEY_SPACE;
+				m_ReverseKeyMap[VK_RETURN]	= keyboard::PV_KEYBOARD_KEY_ENTER;
 			}
+			{
+				m_CursorMap[CursorType::PV_ARROW]		= IDC_ARROW;
+				m_CursorMap[CursorType::PV_TEXT_INPUT]	= IDC_IBEAM;
+				m_CursorMap[CursorType::PV_RESIZE_ALL]	= IDC_SIZEALL;
+				m_CursorMap[CursorType::PV_RESIZE_EW]	= IDC_SIZEWE; 
+				m_CursorMap[CursorType::PV_RESIZE_NS]	= IDC_SIZENS; 
+				m_CursorMap[CursorType::PV_RESIZE_NESW] = IDC_SIZENESW;
+				m_CursorMap[CursorType::PV_RESIZE_NWSE] = IDC_SIZENWSE;
+				m_CursorMap[CursorType::PV_HAND]		= IDC_HAND;
+			}
+
+			ChangeCursor(m_Data.cType);
 		}
 
 		WindowsWindow::~WindowsWindow() {
@@ -315,6 +375,11 @@ namespace prev {
 			DestroyWindow(hWnd);
 			m_GraphicsAPI->Delete();
 			PostQuitMessage(0);
+		}
+
+		void WindowsWindow::ChangeCursor(CursorType type) {
+			SetCursor(LoadCursor(NULL, m_CursorMap[type]));
+			m_Data.cType = type;
 		}
 
 	}

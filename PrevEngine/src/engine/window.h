@@ -6,13 +6,25 @@
 
 namespace prev {
 
+	enum class CursorType {
+		PV_ARROW,
+		PV_TEXT_INPUT,
+		PV_RESIZE_ALL,
+		PV_RESIZE_EW,
+		PV_RESIZE_NS,
+		PV_RESIZE_NESW,
+		PV_RESIZE_NWSE,
+		PV_HAND
+	};
+
 	struct WindowProps {
 		std::string Title;
 		unsigned int Width;
 		unsigned int Height;
+		CursorType CType;
 
-		WindowProps(const std::string &title = "Prev Engine", unsigned int width = 1280, unsigned int height = 720) :
-			Title(title), Width(width), Height(height) {
+		WindowProps(const std::string &title = "Prev Engine", unsigned int width = 1280, unsigned int height = 720, CursorType ctype = CursorType::PV_ARROW) :
+			Title(title), Width(width), Height(height), CType(ctype) {
 		}
 
 	};
@@ -36,6 +48,8 @@ namespace prev {
 
 		virtual void CreateOpenGLContext() = 0;
 		virtual void CreateDirectXContext() = 0;
+
+		virtual void ChangeCursor(CursorType type) = 0;
 
 		static Window * Create(const WindowProps &props = WindowProps());
 	};

@@ -3,6 +3,7 @@
 #include "pch.h"
 
 #define BIT(x) (1 << x)
+#define BIND_EVENT_FN(x) std::bind(&x, this, std::placeholders::_1)
 
 namespace prev {
 
@@ -11,6 +12,7 @@ namespace prev {
 		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased,
+		CharacterInput,
 		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 	};
 
