@@ -14,6 +14,7 @@ end
 --Finish Setting up gcc
 
 workspace "PrevEngine"
+	startproject "Sandbox"
     architecture "x64"
 
     configurations {
@@ -105,9 +106,10 @@ project "PrevEngine"
 
         defines {
             platform,
-            "PV_BUILD_LIB",
 			renderingAPI,
-			"PV_ENABLE_ASSERTS"
+            "PV_BUILD_LIB",
+			"PV_ENABLE_ASSERTS",
+			"_CRT_SECURE_NO_WARNINGS"
 		}
 		
 		removefiles {
@@ -118,7 +120,7 @@ project "PrevEngine"
 		
 	filter "action:vs*"
 		pchsource "PrevEngine/src/pch.cpp"
-
+		
     filter "configurations:Debug"
         defines "PV_DEBUG"
         symbols "On"
@@ -177,7 +179,8 @@ project "Sandbox"
         systemversion "latest"
 
         defines {
-            platform
+            platform,
+			"_CRT_SECURE_NO_WARNINGS"
         }
 		
 		pchheader "pch.h"

@@ -142,7 +142,7 @@ namespace prev {
 			{
 				int xPos = GET_X_LPARAM(lParam);
 				int yPos = GET_Y_LPARAM(lParam);
-				MouseMovedEvent event(xPos, yPos);
+				MouseMovedEvent event((float)xPos, (float)yPos);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}

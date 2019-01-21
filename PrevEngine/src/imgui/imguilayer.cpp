@@ -81,7 +81,7 @@ namespace prev {
 
 	void ImGuiLayer::OnUpdate() {
 		ImGuiIO &io = ImGui::GetIO();
-		io.DisplaySize = ImVec2(m_WindowWidth, m_WindowHeight);
+		io.DisplaySize = ImVec2((float)m_WindowWidth, (float)m_WindowHeight);
 		io.DeltaTime = Timer::GetDeltaTime();
 
 		UpdateMouseCursor();
@@ -125,9 +125,6 @@ namespace prev {
 		static ImGuiAppLog log;
 
 		Log::SetLoggerCallbackFunction([this](std::string s, LogLevel l)->void {
-			if (l == LogLevel::PV_INFO) {
-				int a;
-			}
 			log.AddLog(m_LogColors[l], s);
 		});
 

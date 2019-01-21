@@ -42,7 +42,7 @@ namespace prev {
 	}
 
 	bool Input::MouseScrolledCallback(MouseScrolledEvent &e) {
-		m_MouseScrollDelta = e.GetXOffset();
+		m_MouseScrollDelta = (int)e.GetXOffset();
 		return true;
 	}
 
