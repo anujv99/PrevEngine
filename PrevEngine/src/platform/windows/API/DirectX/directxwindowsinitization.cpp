@@ -4,32 +4,30 @@
 #include "adapterreader.h"
 #include <comdef.h>
 
-namespace prev { namespace windows { namespace directx {
+namespace prev { namespace windows {
 
-	DirectX::~DirectX() {
+	WindowsDirectX::~WindowsDirectX() {
 
 	}
 
-	void DirectX::Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) {
+	void WindowsDirectX::Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) {
 		bool status = InitializeDirectX(windowHandle, windowWidth, windowHeight);
 		isReady = status;
 	}
 
-	void DirectX::Update() {
-		static float bgColor[] = {0, 0, 1, 1 };
-		m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), bgColor);
-		m_SwapChain->Present(0, NULL);
+	void WindowsDirectX::Update() {
+		m_Data.m_SwapChain->Present(vSync, NULL);
 	}
 
-	void DirectX::Delete() {
-
-	}
-
-	void DirectX::SetVsync(bool enabled) {
+	void WindowsDirectX::Delete() {
 
 	}
 
-	bool DirectX::InitializeDirectX(HWND hWnd, unsigned int windowWidth, unsigned int windowHeight) {
+	void WindowsDirectX::SetVsync(bool enabled) {
+		vSync = enabled;
+	}
+
+	bool WindowsDirectX::InitializeDirectX(HWND hWnd, unsigned int windowWidth, unsigned int windowHeight) {
 		auto adapters = AdapterReader::GetAdapterData();
 
 		if (adapters.size() < 1) {
@@ -82,10 +80,10 @@ namespace prev { namespace windows { namespace directx {
 									  ARRAYSIZE(featureLevels),
 									  D3D11_SDK_VERSION,
 									  &scd,
-									  m_SwapChain.GetAddressOf(),
-									  m_Device.GetAddressOf(),
+									  m_Data.m_SwapChain.GetAddressOf(),
+									  m_Data.m_Device.GetAddressOf(),
 									  &selectedLevel,
-									  m_DeviceContext.GetAddressOf());
+									  m_Data.m_DeviceContext.GetAddressOf());
 
 		if (FAILED(hr)) {
 			PV_CORE_ERROR("Unable to create D3D11 device and swap chain");
@@ -135,22 +133,22 @@ namespace prev { namespace windows { namespace directx {
 		} break;
 		}
 
-		COM_PTR<ID3D11Texture2D> backBuffer;
-		hr = m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
+		Microsoft::WRL::ComPtr<ID3D11Texture2D> backBuffer;
+		hr = m_Data.m_SwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(backBuffer.GetAddressOf()));
 		if (FAILED(hr)) {
 			PV_CORE_ERROR("Unable to get backbuffer");
 			return false;
 		}
 
-		hr = m_Device->CreateRenderTargetView(backBuffer.Get(), NULL, m_RenderTargetView.GetAddressOf());
+		hr = m_Data.m_Device->CreateRenderTargetView(backBuffer.Get(), NULL, m_Data.m_RenderTargetView.GetAddressOf());
 		if (FAILED(hr)) {
 			PV_CORE_ERROR("Unable to create render target view");
 			return false;
 		}
 
-		m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), NULL);
+		m_Data.m_DeviceContext->OMSetRenderTargets(1, m_Data.m_RenderTargetView.GetAddressOf(), NULL);
 
 		return true;
 	}
 
-} } }
+} }

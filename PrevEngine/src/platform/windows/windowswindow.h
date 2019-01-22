@@ -1,6 +1,6 @@
 #pragma once
 
-#include "API/api.h"
+#include "API/graphicsapi.h"
 #include "engine/window.h"
 #include "essentials/input.h"
 
@@ -8,7 +8,7 @@ namespace prev { namespace windows {
 
 	class WindowsWindow : public Window {
 		friend LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-		friend class Input;
+		friend class ::prev::Input;
 	public:
 		WindowsWindow(const WindowProps &props);
 		virtual ~WindowsWindow();
@@ -26,6 +26,7 @@ namespace prev { namespace windows {
 		void CreateDirectXContext() override;
 
 		void ChangeCursor(CursorType type) override;
+		inline const GraphicsAPI * GetGraphicsAPI() const { return m_GraphicsAPI.get(); }
 	private:
 		bool IsKeyDown(int keyCode) override;
 		virtual void ShutDown();

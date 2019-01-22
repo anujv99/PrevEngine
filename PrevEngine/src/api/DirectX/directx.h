@@ -2,24 +2,25 @@
 
 #ifdef PV_RENDERING_API_DIRECTX
 
-#ifndef PV_PLATFORM_WINDOWS
-#error "DirectX Can only be used with windows (if using windows make sure to define PV_PLATFORM_WINDOWS)"
-#endif
-
+#include <d3d11.h>
 #include "../api.h"
 
-namespace prev { namespace graphicsapi { namespace directx {
+namespace prev {
 
 	class DirectX : public API {
+		friend class ImGuiDirectXGLInit;
 	public:
 		DirectX(unsigned int windowWidth, unsigned int windowHeight);
 		~DirectX();
 
 		void OnUpdate() override;
 	private:
+		const ID3D11Device * GetDirectXDevice() const;
+		const ID3D11DeviceContext * GetDirectXDeviceContext() const;
+	private:
 		void SetViewport() override;
 	};
 
-} } }
+}
 
 #endif

@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "imguiopenglinit.h"
 
+#ifdef PV_RENDERING_API_OPENGL
+
 #include <glad/glad.h>
 #include <imgui.h>
 
@@ -31,3 +33,6 @@ namespace prev {
 	}
 
 }
+
+
+#endif

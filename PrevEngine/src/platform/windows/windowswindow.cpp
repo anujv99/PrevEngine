@@ -340,6 +340,7 @@ namespace prev {
 
 		void WindowsWindow::SetVSync(bool enabled) {
 			m_Data.vSync = enabled;
+			m_GraphicsAPI->SetVsync(enabled);
 		}
 
 		bool WindowsWindow::IsVSync() const {
@@ -348,7 +349,7 @@ namespace prev {
 
 		void WindowsWindow::CreateOpenGLContext() {
 			#ifdef PV_RENDERING_API_OPENGL
-				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new opengl::OpenGLAPI());
+				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new OpenGLAPI());
 				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
 				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
 			#endif
@@ -356,9 +357,10 @@ namespace prev {
 
 		void WindowsWindow::CreateDirectXContext() {
 			#ifdef PV_RENDERING_API_DIRECTX
-				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new directx::DirectX());
+				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new WindowsDirectX());
 				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
 				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
+				m_GraphicsAPI->SetVsync(m_Data.vSync);
 			#endif
 		}
 

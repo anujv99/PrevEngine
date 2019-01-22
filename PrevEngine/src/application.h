@@ -21,6 +21,7 @@ namespace prev {
 		void PushOverlay(Layer * layer);
 
 		Window &GetWindow() const { return *m_Window; }
+		API &GetGraphicsAPI() const { return *m_GraphicsAPI; }
 
 		static Application * GetApplicationInstance();
 	private:

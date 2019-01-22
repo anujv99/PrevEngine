@@ -1,15 +1,15 @@
 #pragma once
 
-#ifdef PV_RENDERING_API_OPENGL
+#ifdef PV_RENDERING_API_DIRECTX
 
 #include "imgui/imguilayer.h"
 
 namespace prev {
 
-	class ImGuiOpenGLInit : public ImGuiWrapper {
+	class ImGuiDirectXGLInit : public ImGuiWrapper {
 	public:
-		ImGuiOpenGLInit();
-		~ImGuiOpenGLInit();
+		ImGuiDirectXGLInit();
+		~ImGuiDirectXGLInit();
 		void Init() override;
 		void NewFrame() override;
 		void Render(ImDrawData * drawData) override;

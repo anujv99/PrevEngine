@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../api.h"
+#include "../graphicsapi.h"
 
-namespace prev { namespace windows { namespace opengl {
+namespace prev { namespace windows {
 
 	class OpenGLAPI : public GraphicsAPI {
 	public:
@@ -21,4 +21,4 @@ namespace prev { namespace windows { namespace opengl {
 		HGLRC m_OpenGLRenderingContext;
 	};
 
-} } }
+} }

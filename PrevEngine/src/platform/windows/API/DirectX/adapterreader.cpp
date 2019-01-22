@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "adapterreader.h"
 
-namespace prev { namespace windows { namespace directx {
+namespace prev { namespace windows {
 
 	std::vector<AdapterData> AdapterReader::m_Adapters;
 
@@ -9,7 +9,7 @@ namespace prev { namespace windows { namespace directx {
 		if (m_Adapters.size() > 0)
 			return m_Adapters;
 
-		COM_PTR<IDXGIFactory> factory;
+		Microsoft::WRL::ComPtr<IDXGIFactory> factory;
 
 		HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(factory.GetAddressOf()));
 		if (FAILED(hr)) {
@@ -33,4 +33,4 @@ namespace prev { namespace windows { namespace directx {
 		}
 	}
 
-} } }
+} }

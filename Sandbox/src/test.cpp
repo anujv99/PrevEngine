@@ -4,9 +4,9 @@
 using namespace prev;
 
 int main() {
-	Log::ShouldShowLogOnTerminal(false);
-	PV_WARN("Using Prev Engine");
+	//Log::ShouldShowLogOnTerminal(false);
 	auto app = new Application();
+	app->GetWindow().SetVSync(true);
 	app->Run();
 	delete app;
 	return 0;

@@ -4,28 +4,43 @@
 #ifdef PV_RENDERING_API_DIRECTX
 
 #include <DirectXMath.h>
+#include "application.h"
 
-namespace prev { 
+#include "platform/windows/API/DirectX/directxwindowsinitization.h"
+#include "platform/windows/windowswindow.h"
+
+namespace prev {
+
+	static const windows::DirectXData * m_Data;
 
 	API * API::Create(unsigned int windowWidth, unsigned int windowHeight) {
-		return new graphicsapi::directx::DirectX(windowWidth, windowHeight);
+		return new DirectX(windowWidth, windowHeight);
 	}
 
-	namespace graphicsapi { namespace directx {
+	DirectX::DirectX(unsigned int windowWidth, unsigned int windowHeight) : API(windowWidth, windowHeight) {
+		windows::WindowsWindow * window = (windows::WindowsWindow*)(&(Application::GetApplicationInstance()->GetWindow()));
+		windows::WindowsDirectX * api = (windows::WindowsDirectX *)window->GetGraphicsAPI();
+		m_Data = api->GetDirectXData();
+	}
 
-		DirectX::DirectX(unsigned int windowWidth, unsigned int windowHeight) : API(windowWidth, windowHeight) {
-		}
+	DirectX::~DirectX() {
+	}
 
-		DirectX::~DirectX() {
-		}
+	void DirectX::OnUpdate() {
+		static float bgColor[] = {0, 0, 1, 1};
+		m_Data->m_DeviceContext->ClearRenderTargetView(m_Data->m_RenderTargetView.Get(), bgColor);
+	}
 
-		void DirectX::OnUpdate() {
-		}
+	const ID3D11Device * DirectX::GetDirectXDevice() const {
+		return m_Data->m_Device.Get();
+	}
 
-		void DirectX::SetViewport() {
-		}
+	const ID3D11DeviceContext * DirectX::GetDirectXDeviceContext() const {
+		return m_Data->m_DeviceContext.Get();
+	}
 
-	} }
+	void DirectX::SetViewport() {
+	}
 
 }
 

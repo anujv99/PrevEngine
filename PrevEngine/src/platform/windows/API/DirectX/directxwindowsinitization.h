@@ -1,28 +1,33 @@
 #pragma once
 
-#include "../api.h"
 #include <d3d11.h>
 #include <wrl/client.h>
 
-#define COM_PTR Microsoft::WRL::ComPtr
+#include "../graphicsapi.h"
 
-namespace prev { namespace windows { namespace directx {
+namespace prev { namespace windows {
 
-	class DirectX : public GraphicsAPI {
+	struct DirectXData {
+		Microsoft::WRL::ComPtr<ID3D11Device>			m_Device;
+		Microsoft::WRL::ComPtr<ID3D11DeviceContext>		m_DeviceContext;
+		Microsoft::WRL::ComPtr<IDXGISwapChain>			m_SwapChain;
+		Microsoft::WRL::ComPtr<ID3D11RenderTargetView>	m_RenderTargetView;
+	};
+
+	class WindowsDirectX : public GraphicsAPI {
 	public:
-		DirectX() : GraphicsAPI() {}
-		~DirectX();
+		WindowsDirectX() : GraphicsAPI() {}
+		~WindowsDirectX();
 		void Init(HWND windowHandle, unsigned int windowWidth, unsigned int windowHeight) override;
 		void Update() override;
 		void Delete() override;
 		void SetVsync(bool enabled) override;
+		const DirectXData* GetDirectXData() const { return &m_Data; }
 	private:
 		bool InitializeDirectX(HWND hWnd, unsigned int windowWidth, unsigned int windowHeight);
 	private:
-		COM_PTR<ID3D11Device>			m_Device;
-		COM_PTR<ID3D11DeviceContext>	m_DeviceContext;
-		COM_PTR<IDXGISwapChain>			m_SwapChain;
-		COM_PTR<ID3D11RenderTargetView> m_RenderTargetView;
+		DirectXData m_Data;
+		bool vSync;
 	};
 
-} } }
+} }

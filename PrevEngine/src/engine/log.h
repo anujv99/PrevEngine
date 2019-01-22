@@ -42,7 +42,18 @@ namespace prev {
 		#define LOG_CALLBACK(level, ...) { char logMessage[MAX_LOG]; sprintf(logMessage, __VA_ARGS__); Log::CallCallback(level, "[APP] " + std::string(logMessage)); }
 	
 		#define LOG(...) if(Log::IsLogShowingOnTerminal()) printf(__VA_ARGS__)
-		#ifdef PV_BUILD_LIB
+		#if defined PV_LOG_DISABLED
+			#define PV_TRACE(...)
+			#define PV_INFO(...)
+			#define PV_WARN(...)
+			#define PV_ERROR(...)
+			#define PV_CRITICAL(...)
+			#define PV_CORE_TRACE(...)
+			#define PV_CORE_INFO(...)
+			#define PV_CORE_WARN(...)
+			#define PV_CORE_ERROR(...)
+			#define PV_CORE_CRITICAL(...)
+		#elif defined PV_BUILD_LIB
 			#define PV_CORE_TRACE(...)		windows::ChangeConsoleColor(windows::CYAN);		LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); CORE_LOG_CALLBACK(LogLevel::PV_TRACE, __VA_ARGS__)
 			#define PV_CORE_INFO(...)		windows::ChangeConsoleColor(windows::GREEN);	LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); CORE_LOG_CALLBACK(LogLevel::PV_INFO, __VA_ARGS__)
 			#define PV_CORE_WARN(...)		windows::ChangeConsoleColor(windows::YELLOW);	LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); CORE_LOG_CALLBACK(LogLevel::PV_WARN, __VA_ARGS__)

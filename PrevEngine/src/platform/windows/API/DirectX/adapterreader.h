@@ -2,7 +2,7 @@
 
 #include "directxwindowsinitization.h"
 
-namespace prev { namespace windows { namespace directx {
+namespace prev { namespace windows {
 
 	class AdapterData {
 	public:
@@ -18,4 +18,4 @@ namespace prev { namespace windows { namespace directx {
 		static std::vector<AdapterData> m_Adapters;
 	};
 
-} } }
+} }

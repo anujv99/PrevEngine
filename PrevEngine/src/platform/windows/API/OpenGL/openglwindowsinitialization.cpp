@@ -4,7 +4,7 @@
 #include <glad/glad_wgl.h>
 #include <glad/glad.h>
 
-namespace prev { namespace windows { namespace opengl {
+namespace prev { namespace windows {
 	OpenGLAPI::~OpenGLAPI() {
 		Delete();
 	}
@@ -105,4 +105,4 @@ namespace prev { namespace windows { namespace opengl {
 		return true;
 	}
 
-} } }
+} }
