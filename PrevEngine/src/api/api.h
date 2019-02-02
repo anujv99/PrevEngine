@@ -2,7 +2,7 @@
 
 #include "pch.h"
 
-#include "engine/events/applicationevent.h"
+#include "shadermanager.h"
 
 namespace prev {
 
@@ -10,10 +10,12 @@ namespace prev {
 	public:
 		API(unsigned int windowWidth, unsigned int windowHeight) : 
 			m_WindowWidth(windowWidth), m_WindowHeight(windowHeight) {}
-		virtual ~API() {}
+		virtual ~API() {
+			ShaderManager::ReleaseShaders();
+		}
 
 		virtual void OnUpdate() = 0;
-		virtual void OnEvent(EventDispatcher &dispatcher) {}
+		virtual void OnEvent(Event &e) {}
 		//Defined in specific api eg (opengl, directx)
 		static API * Create(unsigned int windowWidth, unsigned int windowHeight);
 	protected:
@@ -25,7 +27,7 @@ namespace prev {
 			m_WindowWidth = e.GetWidth();
 			m_WindowHeight = e.GetHeight();
 			SetViewport();
-			return true;
+			return false;
 		}
 	};
 

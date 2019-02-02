@@ -14,6 +14,7 @@
 #include <map>
 #include <list>
 #include <array>
+#include <initializer_list>
 
 #ifdef PV_PLATFORM_WINDOWS
 #include <Windows.h>
@@ -23,3 +24,8 @@
 
 #include "engine/log.h"
 #include "engine/assert.h"
+#include "essentials/timer.h"
+
+#include "engine/events/applicationevent.h"
+#include "engine/events/keyevent.h"
+#include "engine/events/mouseevent.h"

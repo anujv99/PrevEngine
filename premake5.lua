@@ -28,9 +28,11 @@ outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/"
 IncludeDir = {}
 IncludeDir["GLAD"] = "PrevEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
+IncludeDir["glm"] = "PrevEngine/vendor/glm/glm"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
+include "PrevEngine/vendor/glm"
 
 --[[
 Rendering API supported	 | renderingAPI
@@ -62,7 +64,8 @@ project "PrevEngine"
     includedirs {
         "%{prj.name}/src",
 		"%{IncludeDir.GLAD}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
     }
 	
 	links {
@@ -148,7 +151,8 @@ project "Sandbox"
 	
 	includedirs {
 		"PrevEngine/src",
-		"%{prj.name}/src"
+		"%{prj.name}/src",
+		"%{IncludeDir.glm}"
     }
 	
 	links {

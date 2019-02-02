@@ -33,10 +33,11 @@ namespace prev {
 		void OnEvent(Event &event);
 	private:
 		void ShowLogger();
+		void ShowMainMenuBar();
 	private:
 		std::map<ImGuiMouseCursor, CursorType> m_ImGuiMouseCursorMap;
 		std::map<LogLevel, ImVec4> m_LogColors;
-		std::unique_ptr<ImGuiWrapper> m_API;
+		ImGuiWrapper * m_API;
 		unsigned int m_WindowWidth, m_WindowHeight;
 		void UpdateMouseCursor();
 	private:
@@ -47,6 +48,7 @@ namespace prev {
 		bool WindowResized(WindowResizeEvent &e);
 		bool KeyPressed(KeyPressedEvent &e);
 		bool KeyReleased(KeyReleasedEvent &e);
+		bool CharacterInputEvent(CharacterEvent &e);
 	};
 
 }

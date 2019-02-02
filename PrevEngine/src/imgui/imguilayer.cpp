@@ -10,6 +10,8 @@ namespace prev {
 
 	static bool is_demo = true;
 	static bool is_logging = true;
+	static bool changeLogPorps = false;
+	static ImGuiAppLog log;
 
 	ImGuiLayer::ImGuiLayer() {
 		m_WindowWidth = Application::GetApplicationInstance()->GetWindow().GetWidth();
@@ -22,7 +24,7 @@ namespace prev {
 		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
 		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
 
-		m_API = std::unique_ptr<ImGuiWrapper>(ImGuiWrapper::Initialize());
+		m_API = ImGuiWrapper::Initialize();
 		m_API->Init();
 
 		{
@@ -66,9 +68,15 @@ namespace prev {
 			m_LogColors[LogLevel::PV_CRITICAL]	= ImVec4(1, 0, 1, 1);
 		}
 
+		Log::SetLoggerCallbackFunction([this](std::string s, LogLevel l)->void {
+			log.AddLog(l, s);
+		});
+
 	}
 
 	ImGuiLayer::~ImGuiLayer() {
+		delete m_API;
+		ImGui::DestroyContext();
 	}
 
 	void ImGuiLayer::OnAttach() {
@@ -91,12 +99,11 @@ namespace prev {
 
 		if (is_demo)
 			ImGui::ShowDemoWindow(&is_demo);
-		if (Input::IsKeyDown(keyboard::PV_KEYBOARD_KEY_P)) {
-			is_demo = true;
-		}
 
 		if (is_logging)
 			ShowLogger();
+
+		ShowMainMenuBar();
 
 		ImGui::EndFrame();
 		ImGui::Render();
@@ -114,21 +121,39 @@ namespace prev {
 		dispatcher.Dispatch<WindowResizeEvent>(BIND_EVENT_FN(ImGuiLayer::WindowResized));
 		dispatcher.Dispatch<KeyPressedEvent>(BIND_EVENT_FN(ImGuiLayer::KeyPressed));
 		dispatcher.Dispatch<KeyReleasedEvent>(BIND_EVENT_FN(ImGuiLayer::KeyReleased));
+		dispatcher.Dispatch<CharacterEvent>(BIND_EVENT_FN(ImGuiLayer::CharacterInputEvent));
+	}
 
-		if (event.GetEventType() == EventType::CharacterInput) {
-			CharacterEvent &e = *((CharacterEvent*)(&event));
-			io.AddInputCharacter(e.GetPressedChar());
+	void ImGuiLayer::ShowMainMenuBar() {
+		if (ImGui::BeginMainMenuBar()) {
+			if (ImGui::BeginMenu("Misc")) {
+				ImGui::MenuItem("Show Log", NULL, &is_logging);
+				ImGui::MenuItem("Show Demo Window", NULL, &is_demo);
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Log")) {
+				ImGui::MenuItem("Show Log", NULL, &is_logging);
+				ImGui::MenuItem("Change Log Properties", NULL, &changeLogPorps);
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
 		}
 	}
 
 	void ImGuiLayer::ShowLogger() {
-		static ImGuiAppLog log;
-
-		Log::SetLoggerCallbackFunction([this](std::string s, LogLevel l)->void {
-			log.AddLog(m_LogColors[l], s);
-		});
-
-		log.Draw("Log", &is_logging);
+		log.Draw("Log", m_LogColors, &is_logging);
+		if (changeLogPorps) {
+			if (ImGui::Begin("Log Props", &changeLogPorps)) {
+				if (ImGui::CollapsingHeader("Log Level Colors")) {
+					ImGui::ColorEdit4("Info", (float*)&m_LogColors[LogLevel::PV_INFO]);
+					ImGui::ColorEdit4("Trace", (float*)&m_LogColors[LogLevel::PV_TRACE]);
+					ImGui::ColorEdit4("Warn", (float*)&m_LogColors[LogLevel::PV_WARN]);
+					ImGui::ColorEdit4("Error", (float*)&m_LogColors[LogLevel::PV_ERROR]);
+					ImGui::ColorEdit4("Critical", (float*)&m_LogColors[LogLevel::PV_CRITICAL]);
+				}
+				ImGui::End();
+			}
+		}
 	}
 
 	void ImGuiLayer::UpdateMouseCursor() {
@@ -174,6 +199,10 @@ namespace prev {
 		return false;
 	}
 
-
+	bool ImGuiLayer::CharacterInputEvent(CharacterEvent &e) {
+		ImGuiIO &io = ImGui::GetIO();
+		io.AddInputCharacter(e.GetPressedChar());
+		return false;
+	}
 
 }

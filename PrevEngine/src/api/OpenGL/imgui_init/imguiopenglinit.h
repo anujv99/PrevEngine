@@ -4,7 +4,7 @@
 
 #include "imgui/imguilayer.h"
 
-namespace prev {
+namespace prev { namespace opengl {
 
 	class ImGuiOpenGLInit : public ImGuiWrapper {
 	public:
@@ -15,6 +15,6 @@ namespace prev {
 		void Render(ImDrawData * drawData) override;
 	};
 
-}
+} }
 
 #endif

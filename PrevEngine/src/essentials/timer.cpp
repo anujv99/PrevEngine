@@ -47,7 +47,7 @@ namespace prev {
 	TimeThis::~TimeThis() {
 		std::chrono::duration<float> deltaTime = std::chrono::high_resolution_clock::now() - m_Start;
 		if (isMS) {
-			PV_CORE_WARN("This Scope Took : %.3fms", deltaTime.count() * 1000);
+			PV_CORE_WARN("This Scope Took : %.6fms", deltaTime.count() * 1000);
 		} else {
 			PV_CORE_WARN("This Scope Took : %fs", deltaTime.count());
 		}

@@ -4,7 +4,7 @@
 using namespace prev;
 
 int main() {
-	//Log::ShouldShowLogOnTerminal(false);
+	Log::ShouldShowLogOnTerminal(false);
 	auto app = new Application();
 	app->GetWindow().SetVSync(true);
 	app->Run();

@@ -17,6 +17,7 @@ namespace prev {
 		static float GetTime();
 		static float GetDeltaTime();
 		static void FPSCounter(bool isVisible);
+		inline static bool IsLoggingFPSCounter() {return shouldShowFPS; }
 	private:
 		static std::chrono::duration<float> m_DeltaTime;
 		static pv_time_point m_Time, m_StartTime;

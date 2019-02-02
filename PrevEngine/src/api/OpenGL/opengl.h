@@ -4,7 +4,7 @@
 
 #include "../api.h"
 
-namespace prev { namespace graphicsapi { namespace opengl {
+namespace prev { namespace opengl {
 
 	class OpenGL : public API {
 	public:
@@ -12,11 +12,11 @@ namespace prev { namespace graphicsapi { namespace opengl {
 		~OpenGL();
 
 		void OnUpdate() override;
-		void OnEvent(EventDispatcher &dispatcher) override;
+		void OnEvent(Event &e) override;
 	private:
 		void SetViewport() override;
 	};
 
-} } }
+} }
 
 #endif

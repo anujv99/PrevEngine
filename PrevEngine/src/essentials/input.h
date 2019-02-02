@@ -1,7 +1,5 @@
 #pragma once
 
-#include "engine/events/keyevent.h"
-#include "engine/events/mouseevent.h"
 #include "engine/window.h"
 
 #define MAX_KEYBOARD_KEYS 500
@@ -83,7 +81,7 @@ namespace prev {
 		static bool IsKeyReleased(int keyCode);
 	private:
 		void OnUpdate();
-		void OnEvent(EventDispatcher &dispatcher);
+		void OnEvent(Event &e);
 		bool MouseMovedCallback(MouseMovedEvent &e);
 		bool MouseScrolledCallback(MouseScrolledEvent &e);
 	private:

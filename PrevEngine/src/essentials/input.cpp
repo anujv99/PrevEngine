@@ -3,8 +3,6 @@
 
 namespace prev {
 
-#define BIND_EVENT_FUNC(x) std::bind(&Input::x, this, std::placeholders::_1)
-
 	bool Input::m_KeyboardKeys[MAX_KEYBOARD_KEYS]		= {0};
 	int  Input::m_MouseXPos								= 0;
 	int  Input::m_MouseYPos								= 0;
@@ -27,9 +25,10 @@ namespace prev {
 		m_MouseScrollDelta = 0;
 	}
 
-	void Input::OnEvent(EventDispatcher &dispatcher) {
-		dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FUNC(MouseMovedCallback));
-		dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FUNC(MouseScrolledCallback));
+	void Input::OnEvent(Event &e) {
+		EventDispatcher dispatcher(e);
+		dispatcher.Dispatch<MouseMovedEvent>(BIND_EVENT_FN(Input::MouseMovedCallback));
+		dispatcher.Dispatch<MouseScrolledEvent>(BIND_EVENT_FN(Input::MouseScrolledCallback));
 	}
 
 	bool Input::MouseMovedCallback(MouseMovedEvent & e) {
@@ -38,12 +37,12 @@ namespace prev {
 		m_MouseDeltaYPos = y - m_MouseYPos;
 		m_MouseXPos = x;
 		m_MouseYPos = y;
-		return true;
+		return false;
 	}
 
 	bool Input::MouseScrolledCallback(MouseScrolledEvent &e) {
 		m_MouseScrollDelta = (int)e.GetXOffset();
-		return true;
+		return false;
 	}
 
 	bool Input::IsKeyDown(int keyCode) {

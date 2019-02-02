@@ -11,25 +11,29 @@
 namespace prev {
 
 	ImGuiWrapper * ImGuiWrapper::Initialize() {
-		return new ImGuiOpenGLInit();
+		return new opengl::ImGuiOpenGLInit();
 	}
 
-	ImGuiOpenGLInit::ImGuiOpenGLInit() : ImGuiWrapper() {}
+	namespace opengl {
 
-	ImGuiOpenGLInit::~ImGuiOpenGLInit() {
-		ImGui_ImplOpenGL3_Shutdown();
-	}
+		ImGuiOpenGLInit::ImGuiOpenGLInit() : ImGuiWrapper() { }
 
-	void prev::ImGuiOpenGLInit::Init() {
-		ImGui_ImplOpenGL3_Init("#version 460 core");
-	}
+		ImGuiOpenGLInit::~ImGuiOpenGLInit() {
+			ImGui_ImplOpenGL3_Shutdown();
+		}
 
-	void ImGuiOpenGLInit::NewFrame() {
-		ImGui_ImplOpenGL3_NewFrame();
-	}
+		void ImGuiOpenGLInit::Init() {
+			ImGui_ImplOpenGL3_Init("#version 460 core");
+		}
 
-	void ImGuiOpenGLInit::Render(ImDrawData * drawData) {
-		ImGui_ImplOpenGL3_RenderDrawData(drawData);
+		void ImGuiOpenGLInit::NewFrame() {
+			ImGui_ImplOpenGL3_NewFrame();
+		}
+
+		void ImGuiOpenGLInit::Render(ImDrawData* drawData) {
+			ImGui_ImplOpenGL3_RenderDrawData(drawData);
+		}
+
 	}
 
 }
