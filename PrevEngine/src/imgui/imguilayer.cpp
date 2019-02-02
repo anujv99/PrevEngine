@@ -12,6 +12,7 @@ namespace prev {
 	static bool is_logging = true;
 	static bool changeLogPorps = false;
 	static ImGuiAppLog log;
+	static ImGuiMouseCursor lastCursor;
 
 	ImGuiLayer::ImGuiLayer() {
 		m_WindowWidth = Application::GetApplicationInstance()->GetWindow().GetWidth();
@@ -158,7 +159,10 @@ namespace prev {
 
 	void ImGuiLayer::UpdateMouseCursor() {
 		ImGuiMouseCursor cursor = ImGui::GetMouseCursor();
-		Application::GetApplicationInstance()->GetWindow().ChangeCursor(m_ImGuiMouseCursorMap[cursor]);
+		if (lastCursor != cursor) {
+			lastCursor = cursor;
+			Application::GetApplicationInstance()->GetWindow().ChangeCursor(m_ImGuiMouseCursorMap[cursor]);
+		}
 	}
 	bool ImGuiLayer::MouseMoved(MouseMovedEvent &e) {
 		ImGuiIO &io = ImGui::GetIO();

@@ -3,6 +3,7 @@
 #ifdef PV_RENDERING_API_OPENGL
 
 #include "openglobjectsmanager.h"
+#include "math/math.h"
 
 namespace prev {
 
@@ -16,13 +17,19 @@ namespace prev {
 		const Vbo * vbo;
 		const Ibo * ibo;
 		const Vao * vao;
+		static int pm = 0;
+		static int mm = 0;
+		const glm::mat4 * pmp = nullptr;
 
 		OpenGL::OpenGL(unsigned int windowWidth, unsigned int windowHeight) : API(windowWidth, windowHeight) {
 			SetViewport();
 			shader = ShaderManager::LoadShader("tempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
+			pm = shader->GetUniformLocation("projection");
+			mm = shader->GetUniformLocation("model");
 			vbo = OpenGLObjectsManager::CreateVBO();
 			vao = OpenGLObjectsManager::CreateVAO();
 			ibo = OpenGLObjectsManager::CreateIBO();
+			pmp = Math::GetProjectionMatrixPointer();
 			float vertices[] = {
 				-0.5f, 0.5f,
 				-0.5f, -0.5f,
@@ -49,6 +56,7 @@ namespace prev {
 			glClearColor(0, 1, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			shader->UseShader();
+			shader->LoadUniform(*pmp, pm);
 			vao->Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}

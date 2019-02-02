@@ -49,6 +49,7 @@ namespace prev {
 			glDeleteShader(vShaderID);
 			glDeleteShader(fShaderID);
 			glDeleteShader(gShaderID);
+
 			return status;
 		}
 
@@ -72,6 +73,14 @@ namespace prev {
 				return false;
 			}
 			return true;
+		}
+
+		int OpenGLShaders::GetUniformLocation(const char * uniformName) const {
+			return glGetUniformLocation(m_ProgramID, uniformName);
+		}
+
+		void OpenGLShaders::LoadUniform(const glm::mat4 &matrix, int &uniformLocation) const {
+			glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 		}
 
 		int OpenGLShaders::ReadShaderFile(std::string shaderPath, ShaderTypes type) {

@@ -154,10 +154,6 @@ namespace prev {
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
-			case WM_SETCURSOR:
-			{
-				break;
-			}
 			default:
 				return DefWindowProc(hwnd, msg, wParam, lParam);
 			}
@@ -183,7 +179,7 @@ namespace prev {
 			m_Data.height = props.Height;
 			m_Data.cType = props.CType; // C = cursor
 
-			WNDCLASSEX wc;
+			WNDCLASSEX wc = {0};
 			HINSTANCE hInstance = 0;
 
 			wc.cbSize = sizeof(WNDCLASSEX);

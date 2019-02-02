@@ -15,6 +15,9 @@ namespace prev {
 
 		virtual void UseShader() const = 0;
 		virtual ~Shader() {}
+	public:
+		virtual int GetUniformLocation(const char * uniformName) const = 0;
+		virtual void LoadUniform(const glm::mat4 &matrix, int & uniformLocation) const = 0;
 	protected:
 		Shader(const char* vertexShaderFile, const char* fragmentShaderFile, const char* geometryShaderFile = nullptr);
 

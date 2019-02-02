@@ -2,6 +2,7 @@
 #include "application.h"
 #include "essentials/timer.h"
 #include "imgui/imguilayer.h"
+#include "math/math.h"
 
 namespace prev {
 
@@ -13,6 +14,7 @@ namespace prev {
 		m_Window = std::shared_ptr<Window>(Window::Create());				  // Create Window based on platform
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));	 // Set EventCallback
 		m_Input = std::shared_ptr<Input>(new Input(m_Window));				// Create Input Class
+		Math::Init();
 #ifdef PV_RENDERING_API_OPENGL
 		#pragma comment(lib, "opengl32.lib")
 		m_Window->CreateOpenGLContext();
@@ -32,6 +34,7 @@ namespace prev {
 	}
 
 	void Application::OnEvent(Event &event) {
+		Math::OnEvent(event);
 		EventDispatcher dispatcher(event);
 		dispatcher.Dispatch<WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowClose));
 

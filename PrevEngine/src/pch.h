@@ -29,3 +29,8 @@
 #include "engine/events/applicationevent.h"
 #include "engine/events/keyevent.h"
 #include "engine/events/mouseevent.h"
+
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtc/quaternion.hpp>
