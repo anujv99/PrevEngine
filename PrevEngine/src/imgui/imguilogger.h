@@ -14,7 +14,7 @@ private:
 public:
 	std::vector<MessageLog> Messages;
 	ImGuiTextFilter			Filter;
-	bool					ScrollToBottom;
+	bool					ScrollToBottom, check;
 
 	void Clear() {
 		Messages.clear();
@@ -22,6 +22,7 @@ public:
 
 	void AddLog(prev::LogLevel level, std::string message) {
 		Messages.push_back({message, level});
+		check = true;
 	}
 
 	void Draw(const char* title, std::map<prev::LogLevel, ImVec4> &colors, bool* p_open = NULL) {
@@ -68,8 +69,9 @@ public:
 
 		ImGui::PopStyleVar();
 
-		if (ScrollToBottom) {
+		if (ScrollToBottom && check) {
 			ImGui::SetScrollHereY(1.0f);
+			check = false;
 		}
 		ImGui::EndChild();
 		ImGui::End();
