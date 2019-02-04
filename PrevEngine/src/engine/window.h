@@ -47,7 +47,6 @@ namespace prev {
 		virtual bool IsKeyDown(int keyCode) = 0;
 
 		virtual void CreateOpenGLContext() = 0;
-		virtual void CreateDirectXContext() = 0;
 
 		virtual void ChangeCursor(CursorType type) = 0;
 

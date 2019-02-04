@@ -36,10 +36,14 @@ include "PrevEngine/vendor/glm"
 
 --[[
 Rendering API supported	 | renderingAPI
-DirectX 				 | PV_RENDERING_API_DIRECTX
+DirectX 				 | PV_RENDERING_API_DIRECTX // Not Currently Supported
 OpenGL					 | PV_RENDERING_API_OPENGL
 ]]--
 renderingAPI = "PV_RENDERING_API_OPENGL"
+
+if (renderingAPI ~= "PV_RENDERING_API_OPENGL") then
+	io.write("Only OpenGL supported. Use renderingAPI = \"PV_RENDERING_API_OPENGL\"");
+end
 
 --[[
 Platform supported		| platform 

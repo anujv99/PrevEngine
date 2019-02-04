@@ -6,7 +6,6 @@
 #include "engine/events/mouseevent.h"
 
 #include "misc.h"
-#include "API/DirectX/directxwindowsinitization.h"
 #include "API/OpenGL/openglwindowsinitialization.h"
 
 #include "essentials/input.h"
@@ -208,7 +207,7 @@ namespace prev {
 				WS_EX_CLIENTEDGE,
 				s_WindowClassName,
 				s2ws(props.Title).c_str(),
-				WS_OVERLAPPEDWINDOW,
+				WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
 				CW_USEDEFAULT, CW_USEDEFAULT, rect.right - rect.left, rect.bottom - rect.top,
 				NULL, NULL, hInstance, NULL);
 
@@ -348,15 +347,6 @@ namespace prev {
 				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new OpenGLAPI());
 				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
 				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
-			#endif
-		}
-
-		void WindowsWindow::CreateDirectXContext() {
-			#ifdef PV_RENDERING_API_DIRECTX
-				m_GraphicsAPI = std::unique_ptr<GraphicsAPI>(new WindowsDirectX());
-				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
-				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
-				m_GraphicsAPI->SetVsync(m_Data.vSync);
 			#endif
 		}
 

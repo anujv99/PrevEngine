@@ -35,7 +35,7 @@ namespace prev {
 	bool Math::WindowResized(WindowResizeEvent &e) {
 		m_WindowWidth = e.GetWidth();
 		m_WindowHeight = e.GetHeight();
-		CreateProjectionMatrix();
+		//CreateProjectionMatrix();
 		return false;
 	}
 

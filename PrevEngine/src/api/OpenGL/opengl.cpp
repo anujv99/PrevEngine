@@ -4,6 +4,7 @@
 
 #include "openglobjectsmanager.h"
 #include "math/math.h"
+#include "math/tiles.h"
 
 namespace prev {
 
@@ -20,6 +21,7 @@ namespace prev {
 		static int pm = 0;
 		static int mm = 0;
 		const glm::mat4 * pmp = nullptr;
+		glm::mat4 modelMat = glm::mat4(1.0f);
 
 		OpenGL::OpenGL(unsigned int windowWidth, unsigned int windowHeight) : API(windowWidth, windowHeight) {
 			SetViewport();
@@ -46,6 +48,10 @@ namespace prev {
 			vao->EnableAttribArray(0);
 			vao->UseIndexBuffer(ibo);
 			vao->UnBind();
+
+			Tiles tile(40, 40);
+			modelMat = glm::translate(modelMat, glm::vec3(tile.GetTilePosition(0, 0), 0.0f));
+			modelMat = glm::scale(modelMat, glm::vec3(tile.GetTileSize(), 1.0f));
 		}
 
 		OpenGL::~OpenGL() {
@@ -57,6 +63,7 @@ namespace prev {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			shader->UseShader();
 			shader->LoadUniform(*pmp, pm);
+			shader->LoadUniform(modelMat, mm);
 			vao->Bind();
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}

@@ -23,7 +23,6 @@ namespace prev { namespace windows {
 		bool IsVSync() const override;
 
 		void CreateOpenGLContext() override;
-		void CreateDirectXContext() override;
 
 		void ChangeCursor(CursorType type) override;
 		inline const GraphicsAPI * GetGraphicsAPI() const { return m_GraphicsAPI.get(); }

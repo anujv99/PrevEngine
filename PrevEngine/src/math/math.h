@@ -7,6 +7,7 @@ namespace prev {
 	public:
 		inline static glm::mat4 GetProjectionMatrix() { return m_Projection; }
 		inline static const glm::mat4 * GetProjectionMatrixPointer() { return &m_Projection; }
+		inline static const float GetWorldScale() { return m_WorldScale; }
 	private:
 		static void Init(float worldScale = 1.0f);
 		static void CreateProjectionMatrix();

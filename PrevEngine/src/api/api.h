@@ -16,7 +16,7 @@ namespace prev {
 
 		virtual void OnUpdate() = 0;
 		virtual void OnEvent(Event &e) {}
-		//Defined in specific api eg (opengl, directx)
+		//Defined in specific api eg (opengl, directx => Currently not supported)
 		static API * Create(unsigned int windowWidth, unsigned int windowHeight);
 	protected:
 		virtual void SetViewport() = 0;
