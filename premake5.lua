@@ -26,17 +26,23 @@ workspace "PrevEngine"
 outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/"
 
 IncludeDir = {}
-IncludeDir["GLAD"] = "PrevEngine/vendor/GLAD/include"
+IncludeDir["GLAD"] 	= "PrevEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
-IncludeDir["glm"] = "PrevEngine/vendor/glm/glm"
+IncludeDir["glm"] 	= "PrevEngine/vendor/glm/glm"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/glm"
 
+-- Used by both
+IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
+
+include "PrevEngine/vendor/entityx"
+
 --[[
 Rendering API supported	 | renderingAPI
-DirectX 				 | PV_RENDERING_API_DIRECTX // Not Currently Supported
+---------------------------------------
+DirectX 				 | PV_RENDERING_API_DIRECTX // currently not supported
 OpenGL					 | PV_RENDERING_API_OPENGL
 ]]--
 renderingAPI = "PV_RENDERING_API_OPENGL"
@@ -46,7 +52,8 @@ if (renderingAPI ~= "PV_RENDERING_API_OPENGL") then
 end
 
 --[[
-Platform supported		| platform 
+Platform supported		| platform
+----------------------------------
 Window					| PV_PLATFORM_WINDOWS
 linux					| PV_PLATFORM_LINUX
 ]]--
@@ -69,12 +76,14 @@ project "PrevEngine"
         "%{prj.name}/src",
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entityx}"
     }
 	
 	links {
 		"GLAD",
-		"ImGui"
+		"ImGui",
+		"entityx"
 	}
 
 	filter "system:linux"
@@ -156,7 +165,8 @@ project "Sandbox"
 	includedirs {
 		"PrevEngine/src",
 		"%{prj.name}/src",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entityx}"
     }
 	
 	links {
@@ -185,6 +195,7 @@ project "Sandbox"
         cppdialect "C++17"
         staticruntime "On"
         systemversion "latest"
+		buildoptions "/MTd"
 
         defines {
             platform,
