@@ -32,10 +32,35 @@ struct MovementSystem : public entityx::System<MovementSystem> {
 	}
 };
 
+class TestLayer : public Layer {
+public:
+	TestLayer() : tiler(640, 360) { }
+	~TestLayer() { }
+	void OnAttach() override {
+		m_Shader = ShaderManager::LoadShader("TempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
+		if (!m_Shader->IsShaderComplete()) {
+			__debugbreak;
+		}
+	}
+	void OnDetach() override {
+
+	}
+	void OnUpdate() override {
+		BaseRenderer::RenderQuad(m_Shader, tiler.GetTilePosition(0, 0), tiler.GetTileSize(), 0.0f);
+	}
+	void OnEvent(Event &e) override {
+
+	}
+private:
+	const Shader * m_Shader;
+	Tiles tiler;
+};
+
 int main() {
-	Log::ShouldShowLogOnTerminal(false);
+	//Log::ShouldShowLogOnTerminal(false);
 	auto app = new Application();
 	app->GetWindow().SetVSync(true);
+	app->PushLayer(new TestLayer());
 	app->Run();
 	delete app;
 

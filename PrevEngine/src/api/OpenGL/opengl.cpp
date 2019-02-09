@@ -4,10 +4,14 @@
 #ifdef PV_RENDERING_API_OPENGL
 
 #include "openglobjectsmanager.h"
+#include "openglrenderer.h"
+#include "application.h"
 
 namespace prev {
 
-	API * API::Create(unsigned int windowWidth, unsigned int windowHeight) {
+	API * API::Create() {
+		unsigned int windowWidth = Application::GetApplicationInstance()->GetWindow().GetWidth();
+		unsigned int windowHeight = Application::GetApplicationInstance()->GetWindow().GetHeight();
 		return new opengl::OpenGL(windowWidth, windowHeight);
 	}
 
@@ -15,6 +19,7 @@ namespace prev {
 
 		OpenGL::OpenGL(unsigned int windowWidth, unsigned int windowHeight) : API(windowWidth, windowHeight) {
 			SetViewport();
+			OpenGLRenderer::Init();
 		}
 
 		OpenGL::~OpenGL() {

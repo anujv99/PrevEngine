@@ -20,7 +20,6 @@ namespace prev {
 		void PushOverlay(Layer * layer);
 
 		Window &GetWindow() const { return *m_Window; }
-		API &GetGraphicsAPI() const { return *m_GraphicsAPI; }
 
 		static Application * GetApplicationInstance();
 	private:
@@ -28,7 +27,6 @@ namespace prev {
 
 		std::shared_ptr<Window> m_Window;
 		std::shared_ptr<Input> m_Input;
-		std::unique_ptr<API> m_GraphicsAPI;
 
 		LayerStack m_LayerStack;
 

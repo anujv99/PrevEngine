@@ -3,9 +3,7 @@
 
 namespace prev {
 
-	LayerStack::LayerStack() {
-		m_LayerInsert = m_Layers.begin();
-	}
+	LayerStack::LayerStack() {}
 
 	LayerStack::~LayerStack() {
 		for (Layer * layer : m_Layers)
@@ -13,27 +11,54 @@ namespace prev {
 	}
 
 	void LayerStack::PushLayer(Layer * layer) {
-		m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
+		m_Layers.push_back(layer);
 		layer->OnAttach();
 	}
 
 	void LayerStack::PushOverlay(Layer * overlay) {
-		m_Layers.emplace_back(overlay);
+		m_Overlays.push_back(overlay);
+		overlay->OnAttach();
 	}
 
 	void LayerStack::PopLayer(Layer * layer) {
-		layer->OnDetach();
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-		if (it != m_Layers.end()) {
-			m_Layers.erase(it);
-			m_LayerInsert--;
+		for (int i = 0; i < m_Layers.size(); i++) {
+			if (m_Layers[i] == layer) {
+				m_Layers.erase(m_Layers.begin() + i);
+				layer->OnDetach();
+			}
 		}
 	}
 
 	void LayerStack::PopOverlay(Layer * layer) {
-		auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-		if (it != m_Layers.end()) {
-			m_Layers.erase(it);
+		for (int i = 0; i < m_Overlays.size(); i++) {
+			if (m_Overlays[i] == layer) {
+				m_Overlays.erase(m_Overlays.begin() + i);
+				layer->OnDetach();
+			}
+		}
+	}
+
+	void LayerStack::OnUpdate() {
+		for (auto layer : m_Layers) {
+			layer->OnUpdate();
+		}
+
+		for (auto layer : m_Overlays) {
+			layer->OnUpdate();
+		}
+	}
+
+	void LayerStack::OnEvent(Event & e) {
+		for (auto layer : m_Layers) {
+			layer->OnEvent(e);
+			if (e.Handled())
+				break;
+		}
+
+		for (auto layer : m_Overlays) {
+			layer->OnEvent(e);
+			if (e.Handled())
+				break;
 		}
 	}
 

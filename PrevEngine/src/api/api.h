@@ -3,22 +3,23 @@
 #include "pch.h"
 
 #include "shadermanager.h"
+#include "engine/layer.h"
 
 namespace prev {
 
-	class API {
+	class API : public Layer {
 	public:
-		API(unsigned int windowWidth, unsigned int windowHeight) : 
-			m_WindowWidth(windowWidth), m_WindowHeight(windowHeight) {}
 		virtual ~API() {
 			ShaderManager::ReleaseShaders();
 		}
 
-		virtual void OnUpdate() = 0;
-		virtual void OnEvent(Event &e) {}
+		virtual void OnUpdate() override = 0;
+		virtual void OnEvent(Event &e) override {}
 		//Defined in specific api eg (opengl, directx => Currently not supported)
-		static API * Create(unsigned int windowWidth, unsigned int windowHeight);
+		static API * Create();
 	protected:
+		API(unsigned int windowWidth, unsigned int windowHeight) : 
+			m_WindowWidth(windowWidth), m_WindowHeight(windowHeight), Layer("OpenGLLayer") {}
 		virtual void SetViewport() = 0;
 		std::string m_ApiType;
 		unsigned int m_WindowWidth = 0, m_WindowHeight = 0;
