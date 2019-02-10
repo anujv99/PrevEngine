@@ -17,9 +17,10 @@ namespace prev {
 		virtual ~Shader() {}
 	public:
 		virtual int GetUniformLocation(const char * uniformName) const = 0;
-		virtual void LoadUniform(const glm::mat4 &matrix, int & uniformLocation) const = 0;
+		virtual void LoadUniform(const glm::mat4 & matrix, int uniformLocation) const = 0;
+		virtual void LoadUniform(int data, int uniformLocation) const = 0;
 	protected:
-		Shader(const char* vertexShaderFile, const char* fragmentShaderFile, const char* geometryShaderFile = nullptr);
+		Shader(const char * vertexShaderFile, const char* fragmentShaderFile, const char * geometryShaderFile = nullptr);
 
 		void LoadShader();
 		virtual bool ReadShader(std::string vShaderPath, std::string fShaderPath, std::string gShaderPath) = 0;
@@ -28,7 +29,7 @@ namespace prev {
 		bool isComplete = false;
 		int m_AttachedShaders = 0;
 	private:
-		static Shader* Create(const char* vertexShaderFile, const char* fragmentShaderFile, const char* geometryShaderFile = nullptr);
+		static Shader* Create(const char * vertexShaderFile, const char * fragmentShaderFile, const char * geometryShaderFile = nullptr);
 	};
 
 }

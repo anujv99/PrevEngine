@@ -10,7 +10,8 @@ namespace prev { namespace opengl {
 		~OpenGLShaders();
 	private:
 		virtual int GetUniformLocation(const char * uniformName) const override;
-		virtual void LoadUniform(const glm::mat4 &matrix, int &uniformLocation) const override;
+		virtual void LoadUniform(const glm::mat4 &matrix, int uniformLocation) const override;
+		virtual void LoadUniform(int data, int uniformLocation) const override;
 		virtual void UseShader() const override;
 		virtual bool ReadShader(std::string vShaderPath, std::string fShaderPath, std::string gShaderPath) override;
 		int ReadShaderFile(std::string shaderPath, ShaderTypes type);

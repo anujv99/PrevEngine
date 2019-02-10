@@ -7,3 +7,5 @@
 
 #include "math/math.h"
 #include "math/tiles.h"
+
+#include "game/entityxlayer.h"

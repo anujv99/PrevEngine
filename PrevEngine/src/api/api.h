@@ -3,6 +3,7 @@
 #include "pch.h"
 
 #include "shadermanager.h"
+#include "texturemanager.h"
 #include "engine/layer.h"
 
 namespace prev {
@@ -11,6 +12,7 @@ namespace prev {
 	public:
 		virtual ~API() {
 			ShaderManager::ReleaseShaders();
+			TextureManager::ReleaseTextures();
 		}
 
 		virtual void OnUpdate() override = 0;

@@ -13,9 +13,8 @@ namespace prev {
 	}
 
 	void Shader::LoadShader()  {
-		bool status = ReadShader(m_VertexShaderFile, m_FragmentShaderFile, m_GeometryShaderFile);
+		isComplete = ReadShader(m_VertexShaderFile, m_FragmentShaderFile, m_GeometryShaderFile);
 		// TODO Add imgui assert so as to check the console for errors before quitting the engine
-		isComplete = status;
 	}
 
 }

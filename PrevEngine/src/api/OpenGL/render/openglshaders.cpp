@@ -79,8 +79,12 @@ namespace prev {
 			return glGetUniformLocation(m_ProgramID, uniformName);
 		}
 
-		void OpenGLShaders::LoadUniform(const glm::mat4 &matrix, int &uniformLocation) const {
+		void OpenGLShaders::LoadUniform(const glm::mat4 &matrix, int uniformLocation) const {
 			glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+		}
+
+		void OpenGLShaders::LoadUniform(int data, int uniformLocation) const {
+			glUniform1i(uniformLocation, data);
 		}
 
 		int OpenGLShaders::ReadShaderFile(std::string shaderPath, ShaderTypes type) {

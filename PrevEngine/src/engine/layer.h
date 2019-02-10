@@ -5,10 +5,12 @@
 namespace prev {
 
 	class Layer {
+		friend class Application;
+		friend class LayerStack;
 	public:
 		Layer(const std::string &name = "Layer");
 		virtual ~Layer();
-
+	private:
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate() {}

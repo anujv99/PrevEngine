@@ -36,3 +36,4 @@
 #include <gtc/quaternion.hpp>
 
 #include <entityx/entityx.h>
+#include "entityx/deps/Dependencies.h"
