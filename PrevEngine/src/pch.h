@@ -37,3 +37,5 @@
 
 #include <entityx/entityx.h>
 #include "entityx/deps/Dependencies.h"
+
+#include <Box2D/Box2D.h>

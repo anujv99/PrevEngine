@@ -170,7 +170,8 @@ project "Sandbox"
 		"PrevEngine/src",
 		"%{prj.name}/src",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entityx}"
+		"%{IncludeDir.entityx}",
+		"%{IncludeDir.Box2D}"
     }
 	
 	links {

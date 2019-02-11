@@ -1,5 +1,6 @@
 #pragma once
 
+#include <glad/glad.h>
 #include "api/shader.h"
 
 namespace prev { namespace opengl {
@@ -18,7 +19,7 @@ namespace prev { namespace opengl {
 		int CompileShader(const char* shaderSource, unsigned int shaderType);
 		bool CreateProgram(std::initializer_list<int> shaders);
 	private:
-		unsigned int m_ProgramID;
+		GLuint m_ProgramID;
 		int m_ProjectionMatrixLocation, m_ModelMatrixLocation;
 	};
 

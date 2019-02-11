@@ -9,25 +9,34 @@
 #include <Box2D/Box2D.h>
 #include "game/entityxlayer.h"
 
+#include "collision/box2ddebuglayer.h"
+
 namespace prev {
 
 	static Application * s_Instance = nullptr;
 
+	// Construct a world object, which will hold and simulate the rigid bodies.
+	static b2World * world;
+	b2Body * body;
+
+	Box2DDebugLayer * b2DebugDraw;
+
 	static void testfunc() {
-		Tiles tile(68, 35);
-		const Shader * shader = ShaderManager::LoadShader("TempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
-		shader->LoadUniform(0, shader->GetUniformLocation("TextureCoord"));
+		Tiles tile(16, 16);
 		const Texture * texture = TextureManager::LoadTexture("TempTexture", "C:/users/preve/desktop/hotel-sign.png");
 		const Texture * texture2 = TextureManager::LoadTexture("TempTexture2", "C:/users/preve/desktop/banners.png");
+		const Shader * shader = ShaderManager::LoadShader("TempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
+		auto texLocation = shader->GetUniformLocation("firstTexture");
+		shader->LoadUniform(0, texLocation);
 		auto layer = new EntityXLayer();
 		auto entity = layer->entities.create();
 		auto entity2 = layer->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(1, 1));
+		entity.assign<components::Position>(tile.GetTilePosition(10, 10));
 		entity.assign<components::Scale>(tile.GetTileSize());
 		entity.assign<components::Renderable>(shader);
 		entity.assign<components::TextureComp>(texture);
 
-		entity2.assign<components::Position >(tile.GetTilePosition(2, 2));
+		entity2.assign<components::Position >(tile.GetTilePosition(20, 20));
 		entity2.assign<components::Renderable>(shader);
 		entity2.assign<components::TextureComp>(texture2);
 
@@ -35,25 +44,23 @@ namespace prev {
 		s_Instance->PushLayer(layer);
 
 		/*----------------------------------------------------- Box2D */
-		b2Vec2 gravity(0.0f, -10.0f);
-
-		// Construct a world object, which will hold and simulate the rigid bodies.
-		b2World world(gravity);
+		world = new b2World(b2Vec2(0.0f, -10.0f));
+		world->SetDebugDraw(b2DebugDraw->Getb2Draw());
 
 		// Define the ground body.
 		b2BodyDef groundBodyDef;
-		groundBodyDef.position.Set(0.0f, -10.0f);
+		groundBodyDef.position.Set(0.0f, -9.0f);
 
 		// Call the body factory which allocates memory for the ground body
 		// from a pool and creates the ground box shape (also from a pool).
 		// The body is also added to the world.
-		b2Body * groundBody = world.CreateBody(&groundBodyDef);
+		b2Body * groundBody = world->CreateBody(&groundBodyDef);
 
 		// Define the ground box shape.
 		b2PolygonShape groundBox;
 
 		// The extents are the half-widths of the box.
-		groundBox.SetAsBox(50.0f, 10.0f);
+		groundBox.SetAsBox(100.0f, 10.0f);
 
 		// Add the ground fixture to the ground body.
 		groundBody->CreateFixture(&groundBox, 0.0f);
@@ -61,12 +68,13 @@ namespace prev {
 		// Define the dynamic body. We set its position and call the body factory.
 		b2BodyDef bodyDef;
 		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(0.0f, 4.0f);
-		b2Body * body = world.CreateBody(&bodyDef);
+		bodyDef.position.Set(5.0f, 10.0f);
+		bodyDef.angle = 45.0f;
+		body = world->CreateBody(&bodyDef);
 
 		// Define another box shape for our dynamic body.
 		b2PolygonShape dynamicBox;
-		dynamicBox.SetAsBox(1.0f, 1.0f);
+		dynamicBox.SetAsBox(tile.GetTileSize().x, tile.GetTileSize().y);
 
 		// Define the dynamic body fixture.
 		b2FixtureDef fixtureDef;
@@ -84,22 +92,14 @@ namespace prev {
 		// Prepare for simulation. Typically we use a time step of 1/60 of a
 		// second (60Hz) and 10 iterations. This provides a high quality simulation
 		// in most game scenarios.
-		float32 timeStep = 1.0f / 60.0f;
-		int32 velocityIterations = 6;
-		int32 positionIterations = 2;
 
 		// This is our little game loop.
-		for (int32 i = 0; i < 60; ++i) {
-			// Instruct the world to perform a single step of simulation.
-			// It is generally best to keep the time step and iterations fixed.
-			world.Step(timeStep, velocityIterations, positionIterations);
 
-			// Now print the position and angle of the body.
-			b2Vec2 position = body->GetPosition();
-			float32 angle = body->GetAngle();
-
-			printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-		}
+		uint32 flags = 0;
+		flags += b2Draw::e_shapeBit;
+		flags += b2Draw::e_jointBit;
+		flags += b2Draw::e_aabbBit;
+		b2DebugDraw->Getb2Draw()->SetFlags(flags);
 
 		/*----------------------------------------------------- ~Box2D */
 
@@ -121,10 +121,13 @@ namespace prev {
 		// Create Graphics Class based on api
 		PushLayer(API::Create());
 		PushOverlay(new ImGuiLayer());
+		b2DebugDraw = new Box2DDebugLayer();
+		PushOverlay(b2DebugDraw);
 		testfunc();
 	}
 
 	Application::~Application() {
+		delete world;
 	}
 
 	void Application::OnEvent(Event &event) {
@@ -152,6 +155,9 @@ namespace prev {
 			Timer::Update();
 
 			m_LayerStack.OnUpdate();
+
+			world->Step(1.0f / 60.0f, 6, 2);
+			world->DrawDebugData();
 
 			m_Input->OnUpdate();
 			m_Window->OnUpdate();

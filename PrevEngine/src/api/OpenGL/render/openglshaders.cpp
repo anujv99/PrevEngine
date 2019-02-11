@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "openglshaders.h"
 
-#include <glad/glad.h>
-
 namespace prev {
 
 	Shader* Shader::Create(const char* vertexShaderFile, const char* fragmentShaderFile, const char* geometryShaderFile) {
