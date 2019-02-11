@@ -6,6 +6,10 @@ namespace prev {
 	std::map<std::string, Texture *> TextureManager::s_Textures;
 
 	const Texture * TextureManager::LoadTexture(const char * textureName, const char * textureFile) {
+		if (s_Textures.find(textureName) != s_Textures.end()) {
+			PV_CORE_CRITICAL("Texture with name (%s) already exists", textureName);
+			return nullptr;
+		}
 		Texture * texture = Texture::Create(textureFile);
 		if (!texture->IsTextureComplete()) {
 			delete texture;

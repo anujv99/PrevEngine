@@ -39,8 +39,11 @@ int main() {
 	entity.assign<components::Scale>(tile.GetTileSize());
 	entity.assign<components::Renderable>(shader);
 	entity.assign<components::TextureComp>(texture);
+
+	entity2.assign<components::Position > (tile.GetTilePosition(2, 2));
 	entity2.assign<components::Renderable>(shader);
 	entity2.assign<components::TextureComp>(texture2);
+
 	layer->AddSystem<systems::RenderSystem>();
 	app->PushLayer(layer);
 

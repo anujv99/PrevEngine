@@ -6,6 +6,10 @@ namespace prev {
 	std::map<std::string, Shader *> ShaderManager::s_Shaders;
 	
 	const Shader * ShaderManager::LoadShader(const char* shaderName, const char* vertexShaderFile, const char* fragmentShaderFile, const char* geometryShaderFile) {
+		if (s_Shaders.find(shaderName) != s_Shaders.end()) {
+			PV_CORE_CRITICAL("Texture with name (%s) already exists", shaderName);
+			return nullptr;
+		}
 		Shader* shader = Shader::Create(vertexShaderFile, fragmentShaderFile, geometryShaderFile);
 		if (!shader->IsShaderComplete()) {
 			delete shader;
