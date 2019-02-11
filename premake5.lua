@@ -29,10 +29,12 @@ IncludeDir = {}
 IncludeDir["GLAD"] 	= "PrevEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
 IncludeDir["glm"] 	= "PrevEngine/vendor/glm/glm"
+IncludeDir["Box2D"] = "PrevEngine/vendor/Box2D"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/glm"
+include "PrevEngine/vendor/Box2D"
 
 -- Used by both
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
@@ -77,13 +79,15 @@ project "PrevEngine"
 		"%{IncludeDir.GLAD}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.entityx}"
+		"%{IncludeDir.entityx}",
+		"%{IncludeDir.Box2D}"
     }
 	
 	links {
 		"GLAD",
 		"ImGui",
-		"entityx"
+		"entityx",
+		"Box2D"
 	}
 
 	filter "system:linux"

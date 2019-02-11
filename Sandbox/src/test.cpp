@@ -27,6 +27,7 @@ int main() {
 	app->GetWindow().SetVSync(true);
 	//Add things here
 	/*--------------------------------------------*/
+	/*
 	Tiles tile(68, 35);
 	const Shader * shader = ShaderManager::LoadShader("TempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
 	shader->LoadUniform(0, shader->GetUniformLocation("TextureCoord"));
@@ -46,7 +47,7 @@ int main() {
 
 	layer->AddSystem<systems::RenderSystem>();
 	app->PushLayer(layer);
-
+	*/
 	/*--------------------------------------------*/
 	app->Run();
 	delete app;

@@ -7,3 +7,6 @@
 [submodule "PrevEngine/vendor/entityx"]
 	path = PrevEngine/vendor/entityx
 	url = https://github.com/preversewharf45/entityx
+[submodule "PrevEngine/vendor/Box2D"]
+	path = PrevEngine/vendor/Box2D
+	url = https://github.com/preversewharf45/Box2D
