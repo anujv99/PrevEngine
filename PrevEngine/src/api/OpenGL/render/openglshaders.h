@@ -20,7 +20,6 @@ namespace prev { namespace opengl {
 		bool CreateProgram(std::initializer_list<int> shaders);
 	private:
 		GLuint m_ProgramID;
-		int m_ProjectionMatrixLocation, m_ModelMatrixLocation;
 	};
 
 } }

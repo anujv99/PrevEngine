@@ -12,7 +12,7 @@ namespace prev {
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, glm::vec3(position, 0.0f));
 			model = glm::scale(model, glm::vec3(scale, 1.0f));
-			model = glm::rotate(model, glm::radians(rotation), glm::vec3(0, 0, 1));
+			model = glm::rotate(model, rotation, glm::vec3(0, 0, 1));
 		}
 	private:
 		static void Init(float worldScale = 1.0f);

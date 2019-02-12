@@ -19,7 +19,11 @@ namespace prev {
 
 		void PushLayer(Layer * layer);
 		void PushOverlay(Layer * layer);
-
+		void PopLayer(Layer * layer);
+		void PopOverlay(Layer * layer);
+		//
+		b2Draw * GetB2Draw();
+		//
 		Window &GetWindow() const { return *m_Window; }
 
 		static Application * GetApplicationInstance();

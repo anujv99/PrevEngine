@@ -31,10 +31,18 @@ namespace prev { namespace components {
 	};
 
 	struct Renderable {
-		Renderable(const Shader * shade) :
-			shader(shade) {
+		Renderable() {}
+	};
+
+	struct Collision {
+		Collision(b2BodyType type, float fric, float dense) {
+			bodyType = type;
+			friction = fric;
+			density = dense;
 		}
-		const Shader * shader;
+		b2Body * body = nullptr;
+		float friction, density;
+		b2BodyType bodyType;
 	};
 
 } }

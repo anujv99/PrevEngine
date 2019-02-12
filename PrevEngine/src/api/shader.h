@@ -19,6 +19,9 @@ namespace prev {
 		virtual int GetUniformLocation(const char * uniformName) const = 0;
 		virtual void LoadUniform(const glm::mat4 & matrix, int uniformLocation) const = 0;
 		virtual void LoadUniform(int data, int uniformLocation) const = 0;
+
+		void LoadProjectionMatrix(const glm::mat4 & matrix) const;
+		void LoadModelMatrix(const glm::mat4 & matrix) const;
 	protected:
 		Shader(const char * vertexShaderFile, const char* fragmentShaderFile, const char * geometryShaderFile = nullptr);
 
@@ -28,6 +31,7 @@ namespace prev {
 		std::string m_VertexShaderFile, m_FragmentShaderFile, m_GeometryShaderFile;
 		bool isComplete = false;
 		int m_AttachedShaders = 0;
+		int m_ModelMatrixLocation, m_ProjectionLocation;
 	private:
 		static Shader* Create(const char * vertexShaderFile, const char * fragmentShaderFile, const char * geometryShaderFile = nullptr);
 	};

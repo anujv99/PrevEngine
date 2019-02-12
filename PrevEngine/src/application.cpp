@@ -5,9 +5,7 @@
 #include "math/math.h"
 
 #include "math/tiles.h"
-
-#include <Box2D/Box2D.h>
-#include "game/entityxlayer.h"
+#include "game/level/levelmanager.h"
 
 #include "collision/box2ddebuglayer.h"
 
@@ -15,95 +13,7 @@ namespace prev {
 
 	static Application * s_Instance = nullptr;
 
-	// Construct a world object, which will hold and simulate the rigid bodies.
-	static b2World * world;
-	b2Body * body;
-
 	Box2DDebugLayer * b2DebugDraw;
-
-	static void testfunc() {
-		Tiles tile(16, 16);
-		const Texture * texture = TextureManager::LoadTexture("TempTexture", "C:/users/preve/desktop/hotel-sign.png");
-		const Texture * texture2 = TextureManager::LoadTexture("TempTexture2", "C:/users/preve/desktop/banners.png");
-		const Shader * shader = ShaderManager::LoadShader("TempShader", "C:/users/preve/desktop/shader.vert", "C:/users/preve/desktop/shader.frag");
-		auto texLocation = shader->GetUniformLocation("firstTexture");
-		shader->LoadUniform(0, texLocation);
-		auto layer = new EntityXLayer();
-		auto entity = layer->entities.create();
-		auto entity2 = layer->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(10, 10));
-		entity.assign<components::Scale>(tile.GetTileSize());
-		entity.assign<components::Renderable>(shader);
-		entity.assign<components::TextureComp>(texture);
-
-		entity2.assign<components::Position >(tile.GetTilePosition(20, 20));
-		entity2.assign<components::Renderable>(shader);
-		entity2.assign<components::TextureComp>(texture2);
-
-		layer->AddSystem<systems::RenderSystem>();
-		s_Instance->PushLayer(layer);
-
-		/*----------------------------------------------------- Box2D */
-		world = new b2World(b2Vec2(0.0f, -10.0f));
-		world->SetDebugDraw(b2DebugDraw->Getb2Draw());
-
-		// Define the ground body.
-		b2BodyDef groundBodyDef;
-		groundBodyDef.position.Set(0.0f, -9.0f);
-
-		// Call the body factory which allocates memory for the ground body
-		// from a pool and creates the ground box shape (also from a pool).
-		// The body is also added to the world.
-		b2Body * groundBody = world->CreateBody(&groundBodyDef);
-
-		// Define the ground box shape.
-		b2PolygonShape groundBox;
-
-		// The extents are the half-widths of the box.
-		groundBox.SetAsBox(100.0f, 10.0f);
-
-		// Add the ground fixture to the ground body.
-		groundBody->CreateFixture(&groundBox, 0.0f);
-
-		// Define the dynamic body. We set its position and call the body factory.
-		b2BodyDef bodyDef;
-		bodyDef.type = b2_dynamicBody;
-		bodyDef.position.Set(5.0f, 10.0f);
-		bodyDef.angle = 45.0f;
-		body = world->CreateBody(&bodyDef);
-
-		// Define another box shape for our dynamic body.
-		b2PolygonShape dynamicBox;
-		dynamicBox.SetAsBox(tile.GetTileSize().x, tile.GetTileSize().y);
-
-		// Define the dynamic body fixture.
-		b2FixtureDef fixtureDef;
-		fixtureDef.shape = &dynamicBox;
-
-		// Set the box density to be non-zero, so it will be dynamic.
-		fixtureDef.density = 1.0f;
-
-		// Override the default friction.
-		fixtureDef.friction = 0.3f;
-
-		// Add the shape to the body.
-		body->CreateFixture(&fixtureDef);
-
-		// Prepare for simulation. Typically we use a time step of 1/60 of a
-		// second (60Hz) and 10 iterations. This provides a high quality simulation
-		// in most game scenarios.
-
-		// This is our little game loop.
-
-		uint32 flags = 0;
-		flags += b2Draw::e_shapeBit;
-		flags += b2Draw::e_jointBit;
-		flags += b2Draw::e_aabbBit;
-		b2DebugDraw->Getb2Draw()->SetFlags(flags);
-
-		/*----------------------------------------------------- ~Box2D */
-
-	}
 
 	Application::Application() {
 		s_Instance = this; //Do this first
@@ -123,11 +33,18 @@ namespace prev {
 		PushOverlay(new ImGuiLayer());
 		b2DebugDraw = new Box2DDebugLayer();
 		PushOverlay(b2DebugDraw);
-		testfunc();
+
+		uint32 flags = 0;
+		flags += b2Draw::e_shapeBit;
+		flags += b2Draw::e_jointBit;
+		flags += b2Draw::e_aabbBit;
+		b2DebugDraw->Getb2Draw()->SetFlags(flags);
+
+		LevelManager::Init();
 	}
 
 	Application::~Application() {
-		delete world;
+		LevelManager::Release();
 	}
 
 	void Application::OnEvent(Event &event) {
@@ -146,6 +63,18 @@ namespace prev {
 		m_LayerStack.PushOverlay(layer);
 	}
 
+	void Application::PopLayer(Layer * layer) {
+		m_LayerStack.PopLayer(layer);
+	}
+
+	void Application::PopOverlay(Layer * layer) {
+		m_LayerStack.PopOverlay(layer);
+	}
+
+	b2Draw * Application::GetB2Draw() {
+		return b2DebugDraw->Getb2Draw();
+	}
+
 	Application * Application::GetApplicationInstance() {
 		return s_Instance;
 	}
@@ -155,9 +84,6 @@ namespace prev {
 			Timer::Update();
 
 			m_LayerStack.OnUpdate();
-
-			world->Step(1.0f / 60.0f, 6, 2);
-			world->DrawDebugData();
 
 			m_Input->OnUpdate();
 			m_Window->OnUpdate();

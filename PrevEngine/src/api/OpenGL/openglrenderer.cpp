@@ -11,11 +11,8 @@ namespace prev {
 	void BaseRenderer::RenderQuad(const Shader * shader, glm::vec2 & position, glm::vec2 & scale, float rotation) {
 		glm::mat4 model;
 		Math::CreateModelMatrix(model, position, scale, rotation);
-		shader->UseShader();
-		int modelLocation = shader->GetUniformLocation("model");
-		int projectionLocation = shader->GetUniformLocation("projection");
-		shader->LoadUniform(model, modelLocation);
-		shader->LoadUniform(Math::GetProjectionMatrix(), projectionLocation);
+		shader->LoadModelMatrix(model);
+		shader->LoadProjectionMatrix(Math::GetProjectionMatrix());
 		m_QuadModel.m_Vao->Bind();
 		m_QuadModel.m_Vao->EnableAttribArray(1);
 		glDrawElements(GL_TRIANGLES, m_QuadModel.m_VertexCount, GL_UNSIGNED_INT, NULL);

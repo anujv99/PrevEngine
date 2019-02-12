@@ -1,7 +1,7 @@
 #pragma once
 
 #include "pch.h"
-#include "api/shader.h"
+#include "api/shadermanager.h"
 #include "api/baserenderer.h"
 #include "game/predefinedcomponents.h"
 
@@ -12,7 +12,7 @@ namespace prev { namespace systems {
 			entities.each<components::Renderable>([](entityx::Entity entity, components::Renderable & renderable) -> void {
 				glm::vec2 pos = entity.component<components::Position>()->position;
 				glm::vec2 scale = entity.component<components::Scale>()->scale;
-				const Shader * shader = entity.component<components::Renderable>()->shader;
+				const Shader * shader = ShaderManager::GetActiveShader();
 				float rotation = 0.0f;
 				if (entity.has_component<components::Rotation>()) {
 					rotation = entity.component<components::Rotation>()->angle;
@@ -20,11 +20,22 @@ namespace prev { namespace systems {
 				if (entity.has_component<components::TextureComp>()) {
 					entity.component<components::TextureComp>()->texture->UseTexture(0);
 				}
-				BaseRenderer::RenderQuad(renderable.shader, pos, scale, rotation);
+				BaseRenderer::RenderQuad(shader, pos, scale, rotation);
 			});
 		}
 	};
 
+	struct CollisionSystem : entityx::System<CollisionSystem> {
+		virtual void update(entityx::EntityManager & entities, entityx::EventManager & events, entityx::TimeDelta dt) override {
+			entities.each<components::Collision>([](entityx::Entity entity, components::Collision & collidor) -> void {
+				auto posHandle = entity.component<components::Position>();
+				posHandle->position = VEC2TOGLM(collidor.body->GetPosition());
 
+				if (entity.has_component<components::Rotation>()) {
+					entity.component<components::Rotation>()->angle = collidor.body->GetAngle();
+				}
+			});
+		}
+	};
 
 } }
