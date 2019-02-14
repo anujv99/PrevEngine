@@ -38,7 +38,6 @@ include "PrevEngine/vendor/Box2D"
 
 -- Used by both
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
-
 include "PrevEngine/vendor/entityx"
 
 --[[
@@ -152,6 +151,10 @@ project "PrevEngine"
 	filter "configurations:Distribute"
 		defines "PV_DIST"
 		optimize "On"
+		
+-- Used by only sandbox
+IncludeDir["lua"] = "Sandbox/vendor/lua" 
+include "Sandbox/vendor/lua"
 
 project "Sandbox"
 	location "Sandbox"
@@ -171,11 +174,13 @@ project "Sandbox"
 		"%{prj.name}/src",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityx}",
-		"%{IncludeDir.Box2D}"
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.lua}"
     }
 	
 	links {
-		"PrevEngine"
+		"PrevEngine",
+		"lua"
 	}
 	
 	filter "system:linux"
