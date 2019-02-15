@@ -6,6 +6,8 @@
 #include <thread>
 #include <memory>
 #include <algorithm>
+#include <locale>
+#include <codecvt>
 
 #include <vector>
 #include <sstream>

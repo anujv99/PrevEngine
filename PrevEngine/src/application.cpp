@@ -15,10 +15,10 @@ namespace prev {
 
 	Box2DDebugLayer * b2DebugDraw;
 
-	Application::Application() {
+	Application::Application(const WindowProps & props) {
 		s_Instance = this; //Do this first
 		PV_CORE_INFO("Engine Starting UP!");
-		m_Window = std::shared_ptr<Window>(Window::Create());				  // Create Window based on platform
+		m_Window = std::shared_ptr<Window>(Window::Create(props));			  // Create Window based on platform
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));	 // Set EventCallback
 		m_Input = std::shared_ptr<Input>(new Input(m_Window));				// Create Input Class
 		Math::Init(0.01f);

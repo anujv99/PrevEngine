@@ -51,6 +51,9 @@ namespace prev {
 		virtual void ChangeCursor(CursorType type) = 0;
 
 		static Window * Create(const WindowProps &props = WindowProps());
+		static std::string GetExePath();
+	private:
+		static std::string m_ExePath;
 	};
 
 }

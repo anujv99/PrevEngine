@@ -14,8 +14,36 @@
 
 namespace prev {
 
+	std::string ws2s(const std::wstring & ws) {
+		using convert_typeX = std::codecvt_utf8<wchar_t>;
+		std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+		return converterX.to_bytes(ws);
+	}
+
+	//For std::string to std::wstring
+	std::wstring s2ws(const std::string & s) {
+		using convert_typeX = std::codecvt_utf8<wchar_t>;
+		std::wstring_convert<convert_typeX, wchar_t> converterX;
+
+		return converterX.from_bytes(s);
+	}
+
+	std::string Window::m_ExePath;
+
 	Window * Window::Create(const WindowProps &props) {
 		return new windows::WindowsWindow(props);
+	}
+
+	std::string Window::GetExePath() {
+		if (m_ExePath.size() != 0) {
+			return m_ExePath;
+		}
+		HMODULE hModule = GetModuleHandle(NULL);
+		WCHAR path[MAX_PATH];
+		GetModuleFileName(hModule, path, MAX_PATH);
+		std::string spath = ws2s(std::wstring(path));
+		return spath.substr(0, spath.find_last_of("\\"));
 	}
 
 	namespace windows {
@@ -157,18 +185,6 @@ namespace prev {
 				return DefWindowProc(hwnd, msg, wParam, lParam);
 			}
 			return 0;
-		}
-
-		//For std::string to std::wstring
-		std::wstring s2ws(const std::string& s) {
-			int len;
-			int slength = (int)s.length() + 1;
-			len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0);
-			wchar_t* buf = new wchar_t[len];
-			MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-			std::wstring r(buf);
-			delete[] buf;
-			return r;
 		}
 
 		WindowsWindow::WindowsWindow(const WindowProps &props) {

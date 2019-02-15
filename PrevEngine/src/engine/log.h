@@ -39,9 +39,9 @@ namespace prev {
 	#ifdef PV_PLATFORM_WINDOWS
 		#define MAX_LOG 2048
 		#define CORE_LOG_CALLBACK(level, ...) { char logMessage[MAX_LOG]; sprintf(logMessage, __VA_ARGS__); Log::CallCallback(level, "[PREV_ENGINE] " + std::string(logMessage)); }
-		#define LOG_CALLBACK(level, ...) { char logMessage[MAX_LOG]; sprintf(logMessage, __VA_ARGS__); Log::CallCallback(level, "[APP] " + std::string(logMessage)); }
+		#define LOG_CALLBACK(level, ...) { char logMessage[MAX_LOG]; sprintf(logMessage, __VA_ARGS__); prev::Log::CallCallback(level, "[APP] " + std::string(logMessage)); }
 	
-		#define LOG(...) if(Log::IsLogShowingOnTerminal()) printf(__VA_ARGS__)
+		#define LOG(...) if(prev::Log::IsLogShowingOnTerminal()) printf(__VA_ARGS__)
 		#if defined PV_LOG_DISABLED
 			#define PV_TRACE(...)
 			#define PV_INFO(...)
@@ -60,11 +60,21 @@ namespace prev {
 			#define PV_CORE_ERROR(...)		windows::ChangeConsoleColor(windows::RED);		LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); CORE_LOG_CALLBACK(LogLevel::PV_ERROR, __VA_ARGS__)
 			#define PV_CORE_CRITICAL(...)	windows::ChangeConsoleColor(windows::RED_OVER);	LOG("[PREV_ENGINE] "); LOG(__VA_ARGS__); LOG("\n"); CORE_LOG_CALLBACK(LogLevel::PV_CRITICAL, __VA_ARGS__)
 		#else
-			#define PV_TRACE(...)		windows::ChangeConsoleColor(windows::CYAN);		LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(LogLevel::PV_TRACE, __VA_ARGS__)
-			#define PV_INFO(...)		windows::ChangeConsoleColor(windows::GREEN);	LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(LogLevel::PV_INFO, __VA_ARGS__)
-			#define PV_WARN(...)		windows::ChangeConsoleColor(windows::YELLOW);	LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(LogLevel::PV_WARN, __VA_ARGS__)
-			#define PV_ERROR(...)		windows::ChangeConsoleColor(windows::RED);		LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(LogLevel::PV_ERROR, __VA_ARGS__)
-			#define PV_CRITICAL(...)	windows::ChangeConsoleColor(windows::RED_OVER);	LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(LogLevel::PV_CRITICAL, __VA_ARGS__)
+			#define PV_TRACE(...)		prev::windows::ChangeConsoleColor(prev::windows::CYAN);\
+										LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(prev::LogLevel::PV_TRACE, __VA_ARGS__)
+
+			#define PV_INFO(...)		prev::windows::ChangeConsoleColor(prev::windows::GREEN);\
+										LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(prev::LogLevel::PV_INFO, __VA_ARGS__)
+
+			#define PV_WARN(...)		prev::windows::ChangeConsoleColor(prev::windows::YELLOW);\
+										LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(prev::LogLevel::PV_WARN, __VA_ARGS__)
+
+			#define PV_ERROR(...)		prev::windows::ChangeConsoleColor(prev::windows::RED);\
+										LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(prev::LogLevel::PV_ERROR, __VA_ARGS__)
+
+			#define PV_CRITICAL(...)	prev::windows::ChangeConsoleColor(prev::windows::RED_OVER);\
+										LOG("[APP] "); LOG(__VA_ARGS__); LOG("\n"); LOG_CALLBACK(prev::LogLevel::PV_CRITICAL, __VA_ARGS__)
+
 		#endif
 	#endif
 

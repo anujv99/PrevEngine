@@ -1,11 +1,25 @@
 #include "pch.h"
 #include <prev.h>
 
+#include "lua/luascript.h"
+
 using namespace prev;
+
+// All path are relative
+WindowProps ReadConfigFile(std::string & fileName) {
+	LuaScript config(fileName);
+	WindowProps props;
+	props.Title = config.get<std::string>("Window.Title");
+	props.Width = config.get<int>("Window.Width");
+	props.Height = config.get<int>("Window.Height");
+	return props;
+}
 
 int main() {
 	//Log::ShouldShowLogOnTerminal(false);
-	auto app = new Application();
+	
+	auto path = Window::GetExePath();
+	auto app = new Application(ReadConfigFile(path + "/config.lua"));
 	app->GetWindow().SetVSync(true);
 	//Add things here
 	/*--------------------------------------------*/
