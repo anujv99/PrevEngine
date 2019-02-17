@@ -81,6 +81,14 @@ namespace prev {
 			glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 		}
 
+		void OpenGLShaders::LoadUniform(const glm::vec3 & data, int uniformLocation) const {
+			glUniform3fv(uniformLocation, 1, glm::value_ptr(data));
+		}
+
+		void OpenGLShaders::LoadUniform(const glm::vec4 & data, int uniformLocation) const {
+			glUniform4fv(uniformLocation, 1, glm::value_ptr(data));
+		}
+
 		void OpenGLShaders::LoadUniform(int data, int uniformLocation) const {
 			glUniform1i(uniformLocation, data);
 		}

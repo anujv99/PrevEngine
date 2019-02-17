@@ -9,3 +9,4 @@
 #include "math/tiles.h"
 
 #include "game/level/levelmanager.h"
+#include "game/animatedsprite.h"

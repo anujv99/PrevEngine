@@ -18,6 +18,8 @@ namespace prev {
 	public:
 		virtual int GetUniformLocation(const char * uniformName) const = 0;
 		virtual void LoadUniform(const glm::mat4 & matrix, int uniformLocation) const = 0;
+		virtual void LoadUniform(const glm::vec3 & data, int uniformLocation) const = 0;
+		virtual void LoadUniform(const glm::vec4 & data, int uniformLocation) const = 0;
 		virtual void LoadUniform(int data, int uniformLocation) const = 0;
 
 		void LoadProjectionMatrix(const glm::mat4 & matrix) const;

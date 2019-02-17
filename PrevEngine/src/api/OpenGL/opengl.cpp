@@ -38,8 +38,6 @@ namespace prev {
 			glEnable(GL_DEBUG_OUTPUT);
 			//glDebugMessageCallback(MessageCallback, 0);
 
-			glEnable(GL_BLEND);
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		OpenGL::~OpenGL() {
@@ -47,7 +45,7 @@ namespace prev {
 		}
 
 		void OpenGL::OnUpdate() {
-			glClearColor(0, 1, 1, 1);
+			glClearColor(0, 0, 0, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 

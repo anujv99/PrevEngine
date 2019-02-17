@@ -30,6 +30,14 @@ namespace prev { namespace components {
 		const Texture * texture;
 	};
 
+	struct TiledTextureComp {
+		TiledTextureComp(const TiledTexture * tex, unsigned short tile) :
+			texture(tex), tileToUse(tile) {
+		}
+		const TiledTexture * texture;
+		unsigned short tileToUse;
+	};
+
 	struct Renderable {
 		Renderable() {}
 	};

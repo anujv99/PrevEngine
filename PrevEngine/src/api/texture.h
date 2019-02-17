@@ -21,4 +21,19 @@ namespace prev {
 		static Texture * Create(const char * textureFile);
 	};
 
+	class TiledTexture {
+		friend class TextureManager;
+	public:
+		inline unsigned short GetTileSizeX() const { return m_TileX; }
+		inline unsigned short GetTileSizeY() const { return m_TileY; }
+
+		inline const Texture * GetTexture() const { return m_Texture; }
+	private:
+		TiledTexture(const Texture * texture, unsigned short tileSizeX, unsigned short tileSizeY) :
+			m_Texture(texture), m_TileX(tileSizeX), m_TileY(tileSizeY) {}
+	private:
+		unsigned short m_TileX, m_TileY;
+		const Texture * m_Texture;
+	};
+
 }

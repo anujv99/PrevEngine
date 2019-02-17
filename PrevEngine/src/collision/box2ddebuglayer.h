@@ -13,7 +13,7 @@ namespace prev {
 		virtual ~Box2DDebugWrapper() {}
 		Box2DDebugWrapper() {}
 	};
-
+	
 	class Box2DDebugLayer final : public Layer {
 	public:
 		Box2DDebugLayer();

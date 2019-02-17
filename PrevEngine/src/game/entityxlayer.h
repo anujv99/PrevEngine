@@ -6,7 +6,7 @@
 namespace prev {
 
 	class EntityXLayer : public entityx::EntityX {
-		friend class Level;
+		friend class LevelLayer;
 	private:
 		EntityXLayer();
 		void Update();
