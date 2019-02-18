@@ -30,14 +30,16 @@ namespace prev {
 #endif
 		// Create Graphics Class based on api
 		PushLayer(API::Create());
-		PushOverlay(new ImGuiLayer());
 		b2DebugDraw = new Box2DDebugLayer();
 		PushOverlay(b2DebugDraw);
+		PushOverlay(new ImGuiLayer());
 
 		uint32 flags = 0;
 		flags += b2Draw::e_shapeBit;
 		flags += b2Draw::e_jointBit;
 		flags += b2Draw::e_aabbBit;
+		flags += b2Draw::e_pairBit;
+		flags += b2Draw::e_centerOfMassBit;
 		b2DebugDraw->Getb2Draw()->SetFlags(flags);
 
 		LevelManager::Init();

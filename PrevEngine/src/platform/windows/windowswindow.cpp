@@ -87,7 +87,7 @@ namespace prev {
 			case WM_KEYDOWN:
 			{
 				try {
-					int keyCode = s_WindowPointer->m_ReverseKeyMap.at(wParam);
+					int keyCode = wParam;
 					bool repeatCount = (lParam & 0x40000000);
 					KeyPressedEvent event(keyCode, repeatCount);
 					s_WindowPointer->m_Data.eventCallback(event);
@@ -97,7 +97,7 @@ namespace prev {
 			case WM_KEYUP:
 			{
 				try {
-					int keyCode = s_WindowPointer->m_ReverseKeyMap.at(wParam);
+					int keyCode = wParam;
 					KeyReleasedEvent event(keyCode);
 					s_WindowPointer->m_Data.eventCallback(event);
 				} catch(std::exception &e) {}
@@ -105,19 +105,19 @@ namespace prev {
 			}
 			case WM_LBUTTONDOWN:
 			{
-				MouseButtonPressedEvent event(mouse::PV_MOUSE_BUTTON_LEFT);
+				MouseButtonPressedEvent event(PV_MOUSE_BUTTON_LEFT);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
 			case WM_RBUTTONDOWN:
 			{
-				MouseButtonPressedEvent event(mouse::PV_MOUSE_BUTTON_RIGHT);
+				MouseButtonPressedEvent event(PV_MOUSE_BUTTON_RIGHT);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
 			case WM_MBUTTONDOWN:
 			{
-				MouseButtonPressedEvent event(mouse::PV_MOUSE_BUTTON_MIDDLE);
+				MouseButtonPressedEvent event(PV_MOUSE_BUTTON_MIDDLE);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
@@ -125,30 +125,30 @@ namespace prev {
 			{
 				unsigned short button = GET_XBUTTON_WPARAM(wParam);
 				if(button == 1) {
-					MouseButtonPressedEvent event(mouse::PV_MOUSE_BUTTON_THUMB1);
+					MouseButtonPressedEvent event(PV_MOUSE_BUTTON_THUMB1);
 					s_WindowPointer->m_Data.eventCallback(event);
 					break;
 				} else if(button == 2) {
-					MouseButtonPressedEvent event(mouse::PV_MOUSE_BUTTON_THUMB2);
+					MouseButtonPressedEvent event(PV_MOUSE_BUTTON_THUMB2);
 					s_WindowPointer->m_Data.eventCallback(event);
 					break;
 				}
 			}
 			case WM_LBUTTONUP:
 			{
-				MouseButtonReleasedEvent event(mouse::PV_MOUSE_BUTTON_LEFT);
+				MouseButtonReleasedEvent event(PV_MOUSE_BUTTON_LEFT);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
 			case WM_RBUTTONUP:
 			{
-				MouseButtonReleasedEvent event(mouse::PV_MOUSE_BUTTON_RIGHT);
+				MouseButtonReleasedEvent event(PV_MOUSE_BUTTON_RIGHT);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
 			case WM_MBUTTONUP:
 			{
-				MouseButtonReleasedEvent event(mouse::PV_MOUSE_BUTTON_MIDDLE);
+				MouseButtonReleasedEvent event(PV_MOUSE_BUTTON_MIDDLE);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
@@ -156,11 +156,11 @@ namespace prev {
 			{
 				unsigned short button = GET_XBUTTON_WPARAM(wParam);
 				if(button == 1) {
-					MouseButtonReleasedEvent event(mouse::PV_MOUSE_BUTTON_THUMB1);
+					MouseButtonReleasedEvent event(PV_MOUSE_BUTTON_THUMB1);
 					s_WindowPointer->m_Data.eventCallback(event);
 					break;
 				} else if(button == 2) {
-					MouseButtonReleasedEvent event(mouse::PV_MOUSE_BUTTON_THUMB2);
+					MouseButtonReleasedEvent event(PV_MOUSE_BUTTON_THUMB2);
 					s_WindowPointer->m_Data.eventCallback(event);
 					break;
 				}
@@ -236,94 +236,6 @@ namespace prev {
 			UpdateWindow(hWnd);
 
 			{
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_A] = 0x41;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_B] = 0x42;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_C] = 0x43;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_D] = 0x44;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_E] = 0x45;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_F] = 0x46;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_G] = 0x47;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_H] = 0x48;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_I] = 0x49;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_J] = 0x4A;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_K] = 0x4B;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_L] = 0x4C;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_M] = 0x4D;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_N] = 0x4E;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_O] = 0x4F;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_P] = 0x50;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Q] = 0x51;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_R] = 0x52;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_S] = 0x53;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_T] = 0x54;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_U] = 0x55;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_V] = 0x56;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_W] = 0x57;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_X] = 0x58;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Y] = 0x59;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_Z] = 0x5A;
-
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_LEFT]		= VK_LEFT;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_RIGHT]		= VK_RIGHT;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_UP]			= VK_UP;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_DOWN]		= VK_DOWN;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_ESCAPE]		= VK_ESCAPE;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_TAB]			= VK_TAB;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_INSERT]		= VK_INSERT;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_HOME]		= VK_HOME;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_PAGEUP]		= VK_PRIOR;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_PAGEDOWN]	= VK_NEXT;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_END]			= VK_END;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_DELETE]		= VK_DELETE;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_BACKSPACE]	= VK_BACK;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_SPACE]		= VK_SPACE;
-				m_KeyMap[keyboard::PV_KEYBOARD_KEY_ENTER]		= VK_RETURN;
-			}
-			{
-				m_ReverseKeyMap[0x41] = keyboard::PV_KEYBOARD_KEY_A;
-				m_ReverseKeyMap[0x42] = keyboard::PV_KEYBOARD_KEY_B;
-				m_ReverseKeyMap[0x43] = keyboard::PV_KEYBOARD_KEY_C;
-				m_ReverseKeyMap[0x44] = keyboard::PV_KEYBOARD_KEY_D;
-				m_ReverseKeyMap[0x45] = keyboard::PV_KEYBOARD_KEY_E;
-				m_ReverseKeyMap[0x46] = keyboard::PV_KEYBOARD_KEY_F;
-				m_ReverseKeyMap[0x47] = keyboard::PV_KEYBOARD_KEY_G;
-				m_ReverseKeyMap[0x48] = keyboard::PV_KEYBOARD_KEY_H;
-				m_ReverseKeyMap[0x49] = keyboard::PV_KEYBOARD_KEY_I;
-				m_ReverseKeyMap[0x4A] = keyboard::PV_KEYBOARD_KEY_J;
-				m_ReverseKeyMap[0x4B] = keyboard::PV_KEYBOARD_KEY_K;
-				m_ReverseKeyMap[0x4C] = keyboard::PV_KEYBOARD_KEY_L;
-				m_ReverseKeyMap[0x4D] = keyboard::PV_KEYBOARD_KEY_M;
-				m_ReverseKeyMap[0x4E] = keyboard::PV_KEYBOARD_KEY_N;
-				m_ReverseKeyMap[0x4F] = keyboard::PV_KEYBOARD_KEY_O;
-				m_ReverseKeyMap[0x50] = keyboard::PV_KEYBOARD_KEY_P;
-				m_ReverseKeyMap[0x51] = keyboard::PV_KEYBOARD_KEY_Q;
-				m_ReverseKeyMap[0x52] = keyboard::PV_KEYBOARD_KEY_R;
-				m_ReverseKeyMap[0x53] = keyboard::PV_KEYBOARD_KEY_S;
-				m_ReverseKeyMap[0x54] = keyboard::PV_KEYBOARD_KEY_T;
-				m_ReverseKeyMap[0x55] = keyboard::PV_KEYBOARD_KEY_U;
-				m_ReverseKeyMap[0x56] = keyboard::PV_KEYBOARD_KEY_V;
-				m_ReverseKeyMap[0x57] = keyboard::PV_KEYBOARD_KEY_W;
-				m_ReverseKeyMap[0x58] = keyboard::PV_KEYBOARD_KEY_X;
-				m_ReverseKeyMap[0x59] = keyboard::PV_KEYBOARD_KEY_Y;
-				m_ReverseKeyMap[0x5A] = keyboard::PV_KEYBOARD_KEY_Z;
-
-				m_ReverseKeyMap[VK_LEFT]	= keyboard::PV_KEYBOARD_KEY_LEFT;
-				m_ReverseKeyMap[VK_RIGHT]	= keyboard::PV_KEYBOARD_KEY_RIGHT;
-				m_ReverseKeyMap[VK_UP]		= keyboard::PV_KEYBOARD_KEY_UP;
-				m_ReverseKeyMap[VK_DOWN]	= keyboard::PV_KEYBOARD_KEY_DOWN;
-				m_ReverseKeyMap[VK_ESCAPE]	= keyboard::PV_KEYBOARD_KEY_ESCAPE;
-				m_ReverseKeyMap[VK_TAB]		= keyboard::PV_KEYBOARD_KEY_TAB;
-				m_ReverseKeyMap[VK_INSERT]	= keyboard::PV_KEYBOARD_KEY_INSERT;
-				m_ReverseKeyMap[VK_HOME]	= keyboard::PV_KEYBOARD_KEY_HOME;
-				m_ReverseKeyMap[VK_PRIOR]	= keyboard::PV_KEYBOARD_KEY_PAGEUP;
-				m_ReverseKeyMap[VK_NEXT]	= keyboard::PV_KEYBOARD_KEY_PAGEDOWN;
-				m_ReverseKeyMap[VK_END]		= keyboard::PV_KEYBOARD_KEY_END;
-				m_ReverseKeyMap[VK_DELETE]	= keyboard::PV_KEYBOARD_KEY_DELETE;
-				m_ReverseKeyMap[VK_BACK]	= keyboard::PV_KEYBOARD_KEY_BACKSPACE;
-				m_ReverseKeyMap[VK_SPACE]	= keyboard::PV_KEYBOARD_KEY_SPACE;
-				m_ReverseKeyMap[VK_RETURN]	= keyboard::PV_KEYBOARD_KEY_ENTER;
-			}
-			{
 				m_CursorMap[CursorType::PV_ARROW]		= IDC_ARROW;
 				m_CursorMap[CursorType::PV_TEXT_INPUT]	= IDC_IBEAM;
 				m_CursorMap[CursorType::PV_RESIZE_ALL]	= IDC_SIZEALL;
@@ -367,7 +279,7 @@ namespace prev {
 		}
 
 		bool WindowsWindow::IsKeyDown(int keyCode) {
-			SHORT keyState = GetAsyncKeyState(m_KeyMap[keyCode]);
+			SHORT keyState = GetAsyncKeyState(keyCode);
 			if((1 << 15) & keyState) {
 				return true;
 			} else {

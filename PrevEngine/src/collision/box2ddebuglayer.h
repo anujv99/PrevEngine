@@ -15,11 +15,10 @@ namespace prev {
 	};
 	
 	class Box2DDebugLayer final : public Layer {
+		friend class ImGuiLayer;
 	public:
 		Box2DDebugLayer();
 		~Box2DDebugLayer();
-		virtual void OnAttach() override;
-		virtual void OnDetach() override;
 		virtual void OnUpdate() override;
 
 		b2Draw * Getb2Draw();

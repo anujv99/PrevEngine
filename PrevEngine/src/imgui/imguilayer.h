@@ -7,6 +7,7 @@
 #include "engine/events/mouseevent.h"
 #include "engine/events/applicationevent.h"
 #include "engine/events/keyevent.h"
+#include "collision/box2ddebuglayer.h"
 
 namespace prev {
 
@@ -34,11 +35,14 @@ namespace prev {
 	private:
 		void ShowLogger();
 		void ShowMainMenuBar();
+		void ShowMiscPropsWindow();
 	private:
 		std::map<ImGuiMouseCursor, CursorType> m_ImGuiMouseCursorMap;
 		std::map<LogLevel, ImVec4> m_LogColors;
 		ImGuiWrapper * m_API;
 		unsigned int m_WindowWidth, m_WindowHeight;
+		b2Draw * m_B2DebugLayer = nullptr;
+
 		void UpdateMouseCursor();
 	private:
 		bool MouseMoved(MouseMovedEvent &e);

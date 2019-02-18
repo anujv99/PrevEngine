@@ -29,8 +29,6 @@ namespace prev { namespace windows {
 	private:
 		bool IsKeyDown(int keyCode) override;
 		virtual void ShutDown();
-		std::map<int, int> m_KeyMap;
-		std::map<int, int> m_ReverseKeyMap;
 		std::map<CursorType, LPWSTR> m_CursorMap;
 	private:
 		struct WindowData {

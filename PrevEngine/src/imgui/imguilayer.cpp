@@ -8,9 +8,10 @@
 
 namespace prev {
 
-	static bool is_demo = true;
-	static bool is_logging = true;
-	static bool changeLogPorps = false;
+	static bool is_demo				= true;
+	static bool is_logging			= true;
+	static bool is_miscPropsWindow	= true;
+	static bool changeLogPorps		= false;
 	static ImGuiAppLog log;
 	static ImGuiMouseCursor lastCursor;
 
@@ -29,27 +30,27 @@ namespace prev {
 		m_API->Init();
 
 		{
-			io.KeyMap[ImGuiKey_Tab]			= keyboard::PV_KEYBOARD_KEY_TAB;
-			io.KeyMap[ImGuiKey_LeftArrow]	= keyboard::PV_KEYBOARD_KEY_LEFT;
-			io.KeyMap[ImGuiKey_RightArrow]	= keyboard::PV_KEYBOARD_KEY_RIGHT;
-			io.KeyMap[ImGuiKey_UpArrow]		= keyboard::PV_KEYBOARD_KEY_UP;
-			io.KeyMap[ImGuiKey_DownArrow]	= keyboard::PV_KEYBOARD_KEY_DOWN;
-			io.KeyMap[ImGuiKey_PageUp]		= keyboard::PV_KEYBOARD_KEY_PAGEUP;
-			io.KeyMap[ImGuiKey_PageDown]	= keyboard::PV_KEYBOARD_KEY_PAGEDOWN;
-			io.KeyMap[ImGuiKey_Home]		= keyboard::PV_KEYBOARD_KEY_HOME;
-			io.KeyMap[ImGuiKey_End]			= keyboard::PV_KEYBOARD_KEY_END;
-			io.KeyMap[ImGuiKey_Insert]		= keyboard::PV_KEYBOARD_KEY_INSERT;
-			io.KeyMap[ImGuiKey_Delete]		= keyboard::PV_KEYBOARD_KEY_DELETE;
-			io.KeyMap[ImGuiKey_Backspace]	= keyboard::PV_KEYBOARD_KEY_BACKSPACE;
-			io.KeyMap[ImGuiKey_Space]		= keyboard::PV_KEYBOARD_KEY_SPACE;
-			io.KeyMap[ImGuiKey_Enter]		= keyboard::PV_KEYBOARD_KEY_ENTER;
-			io.KeyMap[ImGuiKey_Escape]		= keyboard::PV_KEYBOARD_KEY_ESCAPE;
-			io.KeyMap[ImGuiKey_A]			= keyboard::PV_KEYBOARD_KEY_A;
-			io.KeyMap[ImGuiKey_C]			= keyboard::PV_KEYBOARD_KEY_C;
-			io.KeyMap[ImGuiKey_V]			= keyboard::PV_KEYBOARD_KEY_V;
-			io.KeyMap[ImGuiKey_X]			= keyboard::PV_KEYBOARD_KEY_X;
-			io.KeyMap[ImGuiKey_Y]			= keyboard::PV_KEYBOARD_KEY_Y;
-			io.KeyMap[ImGuiKey_Z]			= keyboard::PV_KEYBOARD_KEY_Z;
+			io.KeyMap[ImGuiKey_Tab]			= PV_KEYBOARD_KEY_TAB;
+			io.KeyMap[ImGuiKey_LeftArrow]	= PV_KEYBOARD_KEY_LEFT;
+			io.KeyMap[ImGuiKey_RightArrow]	= PV_KEYBOARD_KEY_RIGHT;
+			io.KeyMap[ImGuiKey_UpArrow]		= PV_KEYBOARD_KEY_UP;
+			io.KeyMap[ImGuiKey_DownArrow]	= PV_KEYBOARD_KEY_DOWN;
+			io.KeyMap[ImGuiKey_PageUp]		= PV_KEYBOARD_KEY_PAGEUP;
+			io.KeyMap[ImGuiKey_PageDown]	= PV_KEYBOARD_KEY_PAGEDOWN;
+			io.KeyMap[ImGuiKey_Home]		= PV_KEYBOARD_KEY_HOME;
+			io.KeyMap[ImGuiKey_End]			= PV_KEYBOARD_KEY_END;
+			io.KeyMap[ImGuiKey_Insert]		= PV_KEYBOARD_KEY_INSERT;
+			io.KeyMap[ImGuiKey_Delete]		= PV_KEYBOARD_KEY_DELETE;
+			io.KeyMap[ImGuiKey_Backspace]	= PV_KEYBOARD_KEY_BACKSPACE;
+			io.KeyMap[ImGuiKey_Space]		= PV_KEYBOARD_KEY_SPACE;
+			io.KeyMap[ImGuiKey_Enter]		= PV_KEYBOARD_KEY_ENTER;
+			io.KeyMap[ImGuiKey_Escape]		= PV_KEYBOARD_KEY_ESCAPE;
+			io.KeyMap[ImGuiKey_A]			= PV_KEYBOARD_KEY_A;
+			io.KeyMap[ImGuiKey_C]			= PV_KEYBOARD_KEY_C;
+			io.KeyMap[ImGuiKey_V]			= PV_KEYBOARD_KEY_V;
+			io.KeyMap[ImGuiKey_X]			= PV_KEYBOARD_KEY_X;
+			io.KeyMap[ImGuiKey_Y]			= PV_KEYBOARD_KEY_Y;
+			io.KeyMap[ImGuiKey_Z]			= PV_KEYBOARD_KEY_Z;
 		}
 		{
 			m_ImGuiMouseCursorMap[ImGuiMouseCursor_Arrow]		= CursorType::PV_ARROW;
@@ -72,6 +73,8 @@ namespace prev {
 		Log::SetLoggerCallbackFunction([this](std::string s, LogLevel l)->void {
 			log.AddLog(l, s);
 		});
+
+		m_B2DebugLayer = Application::GetApplicationInstance()->GetB2Draw();
 
 	}
 
@@ -104,6 +107,9 @@ namespace prev {
 		if (is_logging)
 			ShowLogger();
 
+		if (is_miscPropsWindow)
+			ShowMiscPropsWindow();
+
 		ShowMainMenuBar();
 
 		ImGui::EndFrame();
@@ -130,6 +136,7 @@ namespace prev {
 			if (ImGui::BeginMenu("Misc")) {
 				ImGui::MenuItem("Show Log", NULL, &is_logging);
 				ImGui::MenuItem("Show Demo Window", NULL, &is_demo);
+				ImGui::MenuItem("Change Properties", NULL, &is_miscPropsWindow);
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Log")) {
@@ -138,6 +145,65 @@ namespace prev {
 				ImGui::EndMenu();
 			}
 			ImGui::EndMainMenuBar();
+		}
+	}
+
+	void ImGuiLayer::ShowMiscPropsWindow() {
+		ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_FirstUseEver);
+
+		if (ImGui::Begin("Misc Properties", &is_miscPropsWindow)) {
+
+			if (ImGui::CollapsingHeader("Box2D Debug Draw Props")) {
+				if (m_B2DebugLayer != nullptr) {
+					static bool b2_debug_draw_enabled = true;
+					static unsigned int current_flags = 0;
+					if (ImGui::Checkbox("Box2D Debug Enabled", &b2_debug_draw_enabled)) {
+						unsigned int flags = m_B2DebugLayer->GetFlags();
+						m_B2DebugLayer->SetFlags(current_flags);
+						current_flags = flags;
+					}
+					if (b2_debug_draw_enabled) {
+						static bool is_shape_bit	= true;
+						static bool is_joint_bit	= true;
+						static bool is_aabb_bit		= true;
+						static bool is_pair_bit		= true;
+						static bool is_cm_bit		= true; // Center of mass bit
+						if (ImGui::Checkbox("Shape Bit", &is_shape_bit)) {
+							if (is_shape_bit) {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() + b2Draw::e_shapeBit);
+							} else {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() - b2Draw::e_shapeBit);
+							}
+						} else if (ImGui::Checkbox("Joint Bit", &is_joint_bit)) {
+							if (is_joint_bit) {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() + b2Draw::e_jointBit);
+							} else {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() - b2Draw::e_jointBit);
+							}
+						} else if (ImGui::Checkbox("AABB Bit", &is_aabb_bit)) {
+							if (is_aabb_bit) {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() + b2Draw::e_aabbBit);
+							} else {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() - b2Draw::e_aabbBit);
+							}
+						} else if (ImGui::Checkbox("Pait Bit", &is_pair_bit)) {
+							if (is_pair_bit) {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() + b2Draw::e_pairBit);
+							} else {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() - b2Draw::e_pairBit);
+							}
+						} else if (ImGui::Checkbox("Center of Mass Bit", &is_cm_bit)) {
+							if (is_cm_bit) {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() + b2Draw::e_centerOfMassBit);
+							} else {
+								m_B2DebugLayer->SetFlags(m_B2DebugLayer->GetFlags() - b2Draw::e_centerOfMassBit);
+							}
+						}
+					}
+				}
+			}
+
+			ImGui::End();
 		}
 	}
 

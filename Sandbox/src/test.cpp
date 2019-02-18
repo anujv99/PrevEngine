@@ -143,11 +143,21 @@ void ReadTempLevel(std::string & rootPath, std::string & fileName) {
 	layer->AddSystem<systems::CollisionSystem>();
 }
 
+class TestLayer : public prev::Layer {
+public:
+	virtual void OnUpdate() override {
+		if (prev::Input::IsKeyDown(PV_KEYBOARD_KEY_A)) {
+			PV_TRACE("A Pressed");
+		}
+	}
+};
+
 int main() {
 	//Log::ShouldShowLogOnTerminal(false);
 	
 	auto path = Window::GetExePath();
 	auto app = new Application(ReadConfigFile(path + "\\config.lua"));
+	app->PushLayer(new TestLayer());
 	app->GetWindow().SetVSync(true);
 
 	ReadTempLevel(path, std::string("untitled.lua"));
