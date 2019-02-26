@@ -51,6 +51,7 @@ namespace prev { namespace components {
 		b2Body * body = nullptr;
 		float friction, density;
 		b2BodyType bodyType;
+		bool isCrated = false;
 	};
 
 } }

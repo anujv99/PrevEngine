@@ -8,6 +8,9 @@ namespace prev {
 	void LevelLayer::Configure() {
 		if (!m_IsColliding && !m_IsSharingb2World) return;
 		m_Entities.entities.each<components::Collision>([this](entityx::Entity entity, components::Collision &collision) -> void {
+
+			if (collision.isCrated) return;
+
 			auto pos = entity.component<components::Position>()->position;
 			auto scale = entity.component<components::Scale>()->scale;
 
@@ -30,6 +33,7 @@ namespace prev {
 			fixtureDef.friction = collision.friction;
 
 			collision.body->CreateFixture(&fixtureDef);
+			collision.isCrated = true;
 		});
 	}
 

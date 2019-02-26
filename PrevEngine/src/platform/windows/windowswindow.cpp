@@ -279,7 +279,7 @@ namespace prev {
 		}
 
 		bool WindowsWindow::IsKeyDown(int keyCode) {
-			SHORT keyState = GetAsyncKeyState(keyCode);
+			SHORT keyState = GetKeyState(keyCode);
 			if((1 << 15) & keyState) {
 				return true;
 			} else {

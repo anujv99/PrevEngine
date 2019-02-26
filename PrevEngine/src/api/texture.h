@@ -8,6 +8,8 @@ namespace prev {
 		virtual ~Texture() { }
 		virtual void UseTexture(unsigned int textureUnit) const = 0;
 		inline bool IsTextureComplete() const { return isComplete; }
+		inline unsigned int GetTextureWidth() const { return m_TextureWidth; }
+		inline unsigned int GetTextureHeight() const { return m_TextureHeight; }
 	protected:
 		Texture(const char * textureFile);
 		void LoadTexture();
