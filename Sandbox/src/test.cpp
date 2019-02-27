@@ -65,10 +65,10 @@ static void SetVsync(std::string configFile, Application * app) {
 
 int main() {
 	auto path = Window::GetExePath();
-	auto app = new Application(ReadWindowProperties(path + "config.lua"));
+	auto app = new Application(ReadWindowProperties(path + "../../../Sandbox/res/config.lua"));
 	SetVsync(path + "config.lua", app);
 
-	SnakeGame::CreateSnake(app, path + "snakeConfig.lua");
+	SnakeGame::CreateSnake(app, path + "../../../Sandbox/res/snakeConfig.lua");
 
 	//Add things here
 	/*--------------------------------------------*/

@@ -262,8 +262,8 @@ void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath)
 	ReadConfigFile(configFilePath);
 
 	const Shader * shader = ShaderManager::LoadShader("SnakeShader", 
-													  (Window::GetExePath() + "Shaders\\shader.vert").c_str(),
-													  (Window::GetExePath() + "Shaders\\shader.frag").c_str());
+													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.vert").c_str(),
+													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.frag").c_str());
 	
 	s_WindowWidth = app->GetApplicationInstance()->GetWindow().GetWidth();
 	s_WindowHeight = app->GetApplicationInstance()->GetWindow().GetHeight();
