@@ -45,34 +45,30 @@ struct RenderSystem : entityx::System<RenderSystem> {
 	}
 };
 
-// All path are relative
-WindowProps ReadConfigFile(std::string & fileName) {
-	LuaScript config(fileName);
+static WindowProps ReadWindowProperties(std::string configFile) {
+	LuaScript config(configFile);
+	Log::ShouldShowLogOnTerminal(config.get<bool>("Log.IsLogEnabled"));
+	Timer::FPSCounter(config.get<bool>("Log.ShowFPS"));
+
 	WindowProps props;
+	props.CType = CursorType::PV_HAND;
 	props.Title = config.get<std::string>("Window.Title");
 	props.Width = config.get<int>("Window.Width");
 	props.Height = config.get<int>("Window.Height");
-	config.clean();
 	return props;
 }
 
-class TestLayer : public prev::Layer {
-public:
-	virtual void OnUpdate() override {
-		if (Input::IsKeyDown(PV_KEYBOARD_KEY_A)) {
-			//PV_TRACE("A Pressed");
-		}
-	}
-};
+static void SetVsync(std::string configFile, Application * app) {
+	LuaScript config(configFile);
+	app->GetWindow().SetVSync(config.get<bool>("Window.IsVsync"));
+}
 
 int main() {
-	//Log::ShouldShowLogOnTerminal(false);
 	auto path = Window::GetExePath();
-	auto app = new Application(ReadConfigFile(path + "\\config.lua"));
-	app->PushLayer(new TestLayer());
-	app->GetWindow().SetVSync(false);
+	auto app = new Application(ReadWindowProperties(path + "config.lua"));
+	SetVsync(path + "config.lua", app);
 
-	SnakeGame::CreateSnake(app);
+	SnakeGame::CreateSnake(app, path + "snakeConfig.lua");
 
 	//Add things here
 	/*--------------------------------------------*/

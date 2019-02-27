@@ -10,3 +10,5 @@
 
 #include "game/level/levelmanager.h"
 #include "game/animatedsprite.h"
+
+#include "lua/luascript.h"

@@ -43,7 +43,7 @@ namespace prev {
 		WCHAR path[MAX_PATH];
 		GetModuleFileName(hModule, path, MAX_PATH);
 		std::string spath = ws2s(std::wstring(path));
-		return spath.substr(0, spath.find_last_of("\\"));
+		return spath.substr(0, spath.find_last_of("\\") + 1);
 	}
 
 	namespace windows {

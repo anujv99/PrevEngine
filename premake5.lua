@@ -40,6 +40,9 @@ include "PrevEngine/vendor/Box2D"
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
 include "PrevEngine/vendor/entityx"
 
+IncludeDir["lua"] = "Sandbox/vendor/lua"
+include "Sandbox/vendor/lua"
+
 --[[
 Rendering API supported	 | renderingAPI
 ---------------------------------------
@@ -79,14 +82,16 @@ project "PrevEngine"
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityx}",
-		"%{IncludeDir.Box2D}"
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.lua}"
     }
 	
 	links {
 		"GLAD",
 		"ImGui",
 		"entityx",
-		"Box2D"
+		"Box2D",
+		"lua"
 	}
 
 	filter "system:linux"
@@ -152,10 +157,6 @@ project "PrevEngine"
 		defines "PV_DIST"
 		optimize "On"
 		
--- Used by only sandbox
-IncludeDir["lua"] = "Sandbox/vendor/lua" 
-include "Sandbox/vendor/lua"
-
 project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
@@ -179,8 +180,7 @@ project "Sandbox"
     }
 	
 	links {
-		"PrevEngine",
-		"lua"
+		"PrevEngine"
 	}
 	
 	filter "system:linux"

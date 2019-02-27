@@ -1,5 +1,4 @@
 #pragma once
-#include "vld.h"
 #include "engine/window.h"
 #include "api/api.h"
 
@@ -10,7 +9,7 @@ namespace prev {
 
 	class Application {
 	public:
-		Application(const WindowProps & props = WindowProps());
+		Application(WindowProps winProps = WindowProps());
 		virtual ~Application();
 
 		void Run();

@@ -8,19 +8,19 @@
 #include "game/level/levelmanager.h"
 
 #include "collision/box2ddebuglayer.h"
+#include "lua/luascript.h"
 
 namespace prev {
 
 	static Application * s_Instance = nullptr;
-
 	Box2DDebugLayer * b2DebugDraw;
 
-	Application::Application(const WindowProps & props) {
+	Application::Application(WindowProps winProps) {
 		s_Instance = this; //Do this first
 		PV_CORE_INFO("Engine Starting UP!");
-		m_Window = std::shared_ptr<Window>(Window::Create(props));			  // Create Window based on platform
-		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));	 // Set EventCallback
-		m_Input = std::shared_ptr<Input>(new Input(m_Window));				// Create Input Class
+		m_Window = std::shared_ptr<Window>(Window::Create(winProps));		// Create Window based on platform
+		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));   // Set EventCallback
+		m_Input = std::shared_ptr<Input>(new Input(m_Window));			  // Create Input Class
 		Math::Init(0.01f);
 #ifdef PV_RENDERING_API_OPENGL
 		#pragma comment(lib, "opengl32.lib")
