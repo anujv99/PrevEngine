@@ -63,16 +63,67 @@ static void SetVsync(std::string configFile, Application * app) {
 	app->GetWindow().SetVSync(config.get<bool>("Window.IsVsync"));
 }
 
+class TestLayer : public Layer {
+public:
+	TestLayer() {
+		m_Buffer = InstancedBuffer::Create(1024);
+		m_Shader = ShaderManager::LoadShader("InstancedShader",
+											 (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.vert").c_str(),
+											 (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.frag").c_str());
+
+		float gg[] = {
+			0, 0,
+			1, 1,
+			2, 2,
+			3, 3,
+			4, 4
+		};
+
+		m_Buffer->AppendData(sizeof(gg), gg);
+		m_Buffer->SetNumerOfInstances(5);
+
+		Tiles tile(16, 16);
+		m_ModelMatrix = glm::mat4(1.0f);
+		m_ModelMatrix = glm::translate(m_ModelMatrix, glm::vec3(tile.GetTilePosition(10, 10), 0));
+		m_ModelMatrix = glm::scale(m_ModelMatrix, glm::vec3(tile.GetTileSize(), 0.0f));
+		m_Shader->LoadProjectionMatrix(Math::GetProjectionMatrix());
+		m_Shader->LoadModelMatrix(m_ModelMatrix);
+	}
+	virtual void OnUpdate() override {
+		m_Shader->UseShader();
+		BaseRenderer::RenderQuadInstanced(m_Buffer);
+		if (Input::IsKeyPressed(PV_KEYBOARD_KEY_P)) {
+			float gg[] = {
+				5, 5,
+				6, 6,
+				7, 7,
+				8, 8,
+				9, 9
+			};
+
+			m_Buffer->ReplaceData(0, sizeof(gg), gg);
+			m_Buffer->SetNumerOfInstances(5);
+		}
+	}
+	~TestLayer() {
+		delete m_Buffer;
+	}
+private:
+	InstancedBuffer * m_Buffer;
+	const Shader * m_Shader;
+	glm::mat4 m_ModelMatrix;
+};
+
 int main() {
 	auto path = Window::GetExePath();
 	auto app = new Application(ReadWindowProperties(path + "../../../Sandbox/res/config.lua"));
-	SetVsync(path + "config.lua", app);
+	SetVsync(path + "../../../Sandbox/res/config.lua", app);
 
 	SnakeGame::CreateSnake(app, path + "../../../Sandbox/res/snakeConfig.lua");
 
 	//Add things here
 	/*--------------------------------------------*/
-
+	//app->PushLayer(new TestLayer());
 	/*--------------------------------------------*/
 	app->Run();
 

@@ -16,6 +16,8 @@ namespace prev { namespace opengl {
 
 		inline void Bind() const { glBindBuffer(GL_ARRAY_BUFFER, m_VboID); }
 		inline void UnBind() const { glBindBuffer(GL_ARRAY_BUFFER, 0); }
+
+		inline GLuint GetVboID() const { return m_VboID; }
 	private:
 		GLuint m_VboID;
 	};

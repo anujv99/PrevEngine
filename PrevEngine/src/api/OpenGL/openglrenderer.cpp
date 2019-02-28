@@ -3,6 +3,7 @@
 
 #include "api/baserenderer.h"
 #include "math/math.h"
+#include "api/OpenGL/render/openginstancing.h"
 
 namespace prev {
 
@@ -18,15 +19,23 @@ namespace prev {
 		glDrawElements(GL_TRIANGLES, m_QuadModel.m_VertexCount, GL_UNSIGNED_INT, NULL);
 	}
 
+	void BaseRenderer::RenderQuadInstanced(const InstancedBuffer * buffer) {
+		opengl::Openglnstancing * openglBuffer = (opengl::Openglnstancing *)(buffer);
+		openglBuffer->m_Model.m_Vao->Bind();
+		openglBuffer->m_Model.m_Vao->EnableAttribArray(3);
+		glDrawElementsInstanced(GL_TRIANGLES, openglBuffer->m_Model.m_VertexCount, GL_UNSIGNED_INT, NULL, openglBuffer->GetNumberOfInstances());
+		//glDrawElements(GL_TRIANGLES, openglBuffer->m_Model.m_VertexCount, GL_UNSIGNED_INT, NULL);
+	}
+
 	namespace opengl {
 
 		void OpenGLRenderer::Init() {
-			CreateQuad();
+			m_QuadModel = CreateQuad();
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
-		void OpenGLRenderer::CreateQuad() {
+		RawModel OpenGLRenderer::CreateQuad() {
 			const Vao * vao = OpenGLObjectsManager::CreateVAO();
 			const Vbo * vbo = OpenGLObjectsManager::CreateVBO();
 			const Vbo * vbo2 = OpenGLObjectsManager::CreateVBO();
@@ -58,7 +67,7 @@ namespace prev {
 			vao->LoadVbo(vbo2, 1, 2, GL_FLOAT, 0, nullptr);
 			vao->UseIndexBuffer(ibo);
 
-			m_QuadModel = { vao, 6 };
+			return { vao, 6 };
 		}
 
 	}

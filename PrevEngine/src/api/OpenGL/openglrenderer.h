@@ -11,9 +11,9 @@ namespace prev { namespace opengl {
 
 	class OpenGLRenderer {
 		friend class OpenGL;
-	private:
+	public:
 		static void Init();
-		static void CreateQuad();
+		static RawModel CreateQuad();
 	};
 
 } }

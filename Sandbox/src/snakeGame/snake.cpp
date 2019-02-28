@@ -6,6 +6,7 @@ using namespace prev;
 #include "snakenode.h"
 
 #define WALL_THICKNESS			20
+#define MAX_SNAKE_LENGTH		10000
 
 static float		s_UpdateInterval		= 0.0f;
 static unsigned int s_InitialSnakeLength	= 0;
@@ -17,10 +18,14 @@ static unsigned int s_WindowHeight			= 0;
 static unsigned int s_LengthToIncrease		= 1;
 static unsigned int s_SnakeLength			= 0;
 
+static int s_IndexToChangeInBuffer			= 0;
+
 static Level		* s_Level				= nullptr;
 static LevelLayer	* s_LevelLayer			= nullptr;
 static SnakeNode	* s_HeadNode			= nullptr;
 static SnakeNode	* s_TailNode			= nullptr;
+
+static InstancedBuffer * s_InstancedBuffer	= nullptr;
 
 static glm::vec2	s_MaxTiles				= {-1, -1};
 static glm::vec2	s_FoodIndex				= { -1, -1 };
@@ -38,6 +43,26 @@ static void ReadConfigFile(std::string filePath) {
 	s_SnakeStartY			= snakeConfig.get<int>("Snake_Config.StartPos.Y");
 	s_TileSize				= snakeConfig.get<int>("Snake_Config.TileSize");
 }
+
+class RenderLayer : public Layer {
+public:
+	RenderLayer() {
+		m_GlobalModelMatrix = glm::mat4(1.0f);
+		m_GlobalModelMatrix = glm::translate(m_GlobalModelMatrix, glm::vec3(0));
+		m_GlobalModelMatrix = glm::scale(m_GlobalModelMatrix, glm::vec3(s_Tile.GetTileSize(), 0.0f));
+		m_Shader = s_LevelLayer->GetShader();
+		m_Shader->UseShader();
+		m_Shader->LoadProjectionMatrix(Math::GetProjectionMatrix());
+		m_Shader->LoadModelMatrix(m_GlobalModelMatrix);
+	}
+	virtual void OnUpdate() override {
+		m_Shader->UseShader();
+		BaseRenderer::RenderQuadInstanced(s_InstancedBuffer);
+	}
+private:
+	const Shader * m_Shader;
+	glm::mat4 m_GlobalModelMatrix;
+};
 
 class FoodLayer : public Layer {
 public:
@@ -179,6 +204,14 @@ private:
 		s_HeadNode->m_Entity.component<components::Position>()->position = s_Tile.GetTilePosition(tileIndex.x, tileIndex.y);
 		s_HeadNode->m_TilePos = tileIndex;
 		s_HeadNode->m_NextNode = nullptr;
+
+		UpdateRenderBuffer();
+	}
+	void UpdateRenderBuffer() {
+		s_InstancedBuffer->ReplaceData(s_IndexToChangeInBuffer, 2 * sizeof(float), glm::value_ptr(s_HeadNode->m_TilePos));
+		s_IndexToChangeInBuffer -= 2 * sizeof(float);
+		if (s_IndexToChangeInBuffer < 0)
+			s_IndexToChangeInBuffer = (s_SnakeLength * 2 * sizeof(float)) - (2 * sizeof(float));
 	}
 private:
 	Snake_Direction m_Direction = Snake_Direction::LEFT;
@@ -186,6 +219,8 @@ private:
 };
 
 void CreateSnakeEntity(LevelLayer * levelLayer) {
+
+	std::vector<float> allTilePos;
 
 	s_Tile = Tiles(s_TileSize, s_TileSize);
 	s_MaxTiles = { s_WindowWidth / s_TileSize, s_WindowHeight / s_TileSize };
@@ -207,6 +242,8 @@ void CreateSnakeEntity(LevelLayer * levelLayer) {
 			s_TailNode = snakeNode;
 		}
 
+		allTilePos.push_back(s_TailNode->m_TilePos.x);
+		allTilePos.push_back(s_TailNode->m_TilePos.y);
 		auto entity = levelLayer->GetEntityXLayer()->entities.create();
 		entity.assign<components::Position>(tilePos);
 		entity.assign<components::Scale>(s_Tile.GetTileSize());
@@ -215,6 +252,9 @@ void CreateSnakeEntity(LevelLayer * levelLayer) {
 		s_SnakeLength++;
 	}
 
+	s_InstancedBuffer->AppendData(sizeof(float) * allTilePos.size(), &allTilePos[0]);
+	s_InstancedBuffer->SetNumerOfInstances(allTilePos.size() / 2);
+	s_IndexToChangeInBuffer = (sizeof(float) * allTilePos.size()) - (2 * sizeof(float));
 }
 
 void CreateWalls(LevelLayer * levelLayer) {
@@ -259,11 +299,12 @@ void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath)
 		return;
 	}
 
+	s_InstancedBuffer = InstancedBuffer::Create(10000 * 2 * sizeof(float));
 	ReadConfigFile(configFilePath);
 
 	const Shader * shader = ShaderManager::LoadShader("SnakeShader", 
-													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.vert").c_str(),
-													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.frag").c_str());
+													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.vert").c_str(),
+													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.frag").c_str());
 	
 	s_WindowWidth = app->GetApplicationInstance()->GetWindow().GetWidth();
 	s_WindowHeight = app->GetApplicationInstance()->GetWindow().GetHeight();
@@ -277,12 +318,12 @@ void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath)
 	//CreateWalls(s_LevelLayer);
 
 	s_LevelLayer->GetEntityXLayer()->AddSystem<systems::RenderSystem>();
-	s_LevelLayer->GetEntityXLayer()->AddSystem<systems::CollisionSystem>();
 
 	s_LevelLayer->Configure();
 
 	app->PushLayer(new MovementLayer());
 	app->PushLayer(new FoodLayer());
+	app->PushLayer(new RenderLayer());
 }
 
 void SnakeGame::ReleaseSnake() {
@@ -298,4 +339,5 @@ void SnakeGame::ReleaseSnake() {
 		node = tempNode;
 	}
 	delete node;
+	delete s_InstancedBuffer;
 }

@@ -54,4 +54,10 @@ namespace prev { namespace components {
 		bool isCrated = false;
 	};
 
+	struct Instancing {
+		Instancing(std::vector<float> & data) {
+
+		}
+	};
+
 } }

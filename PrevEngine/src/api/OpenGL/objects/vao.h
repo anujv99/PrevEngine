@@ -20,6 +20,8 @@ namespace prev { namespace opengl {
 		inline void UnBind() const { glBindVertexArray(0); }
 		inline void EnableAttribArray(unsigned int attribNumber = 0) const { for (unsigned int i = 0; i <= attribNumber; i++) glEnableVertexAttribArray(i); }
 		inline void DisableAttribArray(unsigned int attribNumber = 0) const { for (unsigned int i = 0; i <= attribNumber; i++) glDisableVertexAttribArray(i); }
+
+		inline GLuint GetVaoID() const { return m_VaoID; }
 	private:
 		GLuint m_VaoID = 0;
 	};

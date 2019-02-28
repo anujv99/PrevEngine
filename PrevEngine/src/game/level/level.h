@@ -11,6 +11,7 @@ namespace prev {
 	public:
 		inline EntityXLayer * GetEntityXLayer() { return &m_Entities; }
 		inline void SetShader(const Shader * shader) { m_Shader = shader; }
+		inline const Shader * GetShader() const { return m_Shader; }
 		inline b2World * GetBox2DWorld() { return m_World; }
 
 		//Must Call this after setting up level
