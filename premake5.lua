@@ -110,6 +110,10 @@ project "PrevEngine"
 		links {
 			"GLFW"
 		}
+	else
+		removefiles {
+			"%{prj.name}/src/platform/glfw/**.*",
+		}
 	end
 	
     includedirs {
