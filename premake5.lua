@@ -71,7 +71,7 @@ X11						| PV_WINDOWING_API_X11	 -- Dosen't support imgui viewport and can be on
 GLFW					| PV_WINDOWING_API_GLFW  -- Cross platform and support imgui viewport
 ]]--
 windowingAPI = "PV_WINDOWING_API_GLFW"
-if (windowingAPI == "PV_WINDOWING_API_X11" then
+if (windowingAPI == "PV_WINDOWING_API_X11") then
 	error("X11 currently not supported")
 end
 
