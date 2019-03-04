@@ -50,6 +50,8 @@ namespace prev {
 
 		virtual void ChangeCursor(CursorType type) = 0;
 
+		virtual void * GetRawWindow() = 0;
+
 		static Window * Create(const WindowProps &props = WindowProps());
 		static std::string GetExePath();
 	private:

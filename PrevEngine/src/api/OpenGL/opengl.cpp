@@ -35,8 +35,8 @@ namespace prev {
 			OpenGLRenderer::Init();
 
 			// During init, enable debug output
-			glEnable(GL_DEBUG_OUTPUT);
-			glDebugMessageCallback(MessageCallback, 0);
+			//glEnable(GL_DEBUG_OUTPUT);
+			//glDebugMessageCallback(MessageCallback, 0);
 
 		}
 

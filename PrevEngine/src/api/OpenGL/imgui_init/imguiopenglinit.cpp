@@ -6,7 +6,12 @@
 #include <glad/glad.h>
 #include <imgui.h>
 
-#include "imgui_impl_opengl3.h"
+#define IMGUI_IMPL_OPENGL_LOADER_GLAD
+
+#include "examples/imgui_impl_opengl3.h"
+#include "examples/imgui_impl_opengl3.cpp"
+
+#include "application.h"
 
 namespace prev {
 
@@ -31,6 +36,7 @@ namespace prev {
 		}
 
 		void ImGuiOpenGLInit::Render(ImDrawData* drawData) {
+			ImGui::UpdatePlatformWindows();
 			ImGui_ImplOpenGL3_RenderDrawData(drawData);
 		}
 

@@ -19,12 +19,20 @@ namespace prev {
 		m_WindowWidth = Application::GetApplicationInstance()->GetWindow().GetWidth();
 		m_WindowHeight = Application::GetApplicationInstance()->GetWindow().GetHeight();
 
+		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
+		ImGuiIO & io = ImGui::GetIO(); (void)io;
+		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
+		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+
 		ImGui::StyleColorsDark();
 
-		ImGuiIO &io = ImGui::GetIO();
-		io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
-		io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
+		ImGuiStyle & style = ImGui::GetStyle();
+		if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+			style.WindowRounding = 0.0f;
+			style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+		}
 
 		m_API = ImGuiWrapper::Initialize();
 		m_API->Init();
@@ -203,8 +211,8 @@ namespace prev {
 				}
 			}
 
-			ImGui::End();
 		}
+		ImGui::End();
 	}
 
 	void ImGuiLayer::ShowLogger() {

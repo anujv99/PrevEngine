@@ -26,6 +26,8 @@ namespace prev { namespace windows {
 
 		void ChangeCursor(CursorType type) override;
 		inline const GraphicsAPI * GetGraphicsAPI() const { return m_GraphicsAPI.get(); }
+
+		void * GetRawWindow() override;
 	private:
 		bool IsKeyDown(int keyCode) override;
 		virtual void ShutDown();

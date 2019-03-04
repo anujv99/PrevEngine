@@ -10,8 +10,6 @@
 
 #include "essentials/input.h"
 
-#define MOUSE_SCROLL_FACTOR 0.01f
-
 namespace prev {
 
 	std::string ws2s(const std::wstring & ws) {
@@ -176,8 +174,8 @@ namespace prev {
 			case WM_MOUSEWHEEL:
 			{
 				static float deltaScroll = 0.0f;
-				float xPos = GET_WHEEL_DELTA_WPARAM(wParam);
-				MouseScrolledEvent event(xPos * MOUSE_SCROLL_FACTOR, 0);
+				float xPos = (float)GET_WHEEL_DELTA_WPARAM(wParam) / (float)WHEEL_DELTA;
+				MouseScrolledEvent event(xPos, 0);
 				s_WindowPointer->m_Data.eventCallback(event);
 				break;
 			}
@@ -276,6 +274,10 @@ namespace prev {
 				m_GraphicsAPI->Init(hWnd, m_Data.width, m_Data.height);
 				PV_ASSERT(m_GraphicsAPI->IsAPIReady(), "");
 			#endif
+		}
+
+		void * WindowsWindow::GetRawWindow() {
+			return hWnd;
 		}
 
 		bool WindowsWindow::IsKeyDown(int keyCode) {
