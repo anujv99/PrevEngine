@@ -20,7 +20,8 @@ namespace prev {
 	protected:
 		virtual void Init() = 0;
 		virtual void NewFrame() = 0;
-		virtual void Render(ImDrawData * drawData) = 0;
+		virtual void Render() = 0;
+		virtual void OnEvent(Event & event) = 0;
 	};
 
 	class ImGuiLayer : public Layer {
@@ -37,22 +38,10 @@ namespace prev {
 		void ShowMainMenuBar();
 		void ShowMiscPropsWindow();
 	private:
-		std::map<ImGuiMouseCursor, CursorType> m_ImGuiMouseCursorMap;
 		std::map<LogLevel, ImVec4> m_LogColors;
 		ImGuiWrapper * m_API;
-		unsigned int m_WindowWidth, m_WindowHeight;
 		b2Draw * m_B2DebugLayer = nullptr;
-
-		void UpdateMouseCursor();
-	private:
-		bool MouseMoved(MouseMovedEvent &e);
-		bool MouseButtonPressed(MouseButtonPressedEvent &e);
-		bool MouseButtonReleased(MouseButtonReleasedEvent &e);
-		bool MouseScrolled(MouseScrolledEvent &e);
-		bool WindowResized(WindowResizeEvent &e);
-		bool KeyPressed(KeyPressedEvent &e);
-		bool KeyReleased(KeyReleasedEvent &e);
-		bool CharacterInputEvent(CharacterEvent &e);
+	
 	};
 
 }

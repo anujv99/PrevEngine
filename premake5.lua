@@ -30,11 +30,13 @@ IncludeDir["GLAD"] 	= "PrevEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
 IncludeDir["glm"] 	= "PrevEngine/vendor/glm/glm"
 IncludeDir["Box2D"] = "PrevEngine/vendor/Box2D"
+IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/glm"
 include "PrevEngine/vendor/Box2D"
+include "PrevEngine/vendor/glfw"
 
 -- Used by both
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
@@ -52,7 +54,7 @@ OpenGL					 | PV_RENDERING_API_OPENGL
 renderingAPI = "PV_RENDERING_API_OPENGL"
 
 if (renderingAPI ~= "PV_RENDERING_API_OPENGL") then
-	io.write("Only OpenGL supported. Use renderingAPI = \"PV_RENDERING_API_OPENGL\"");
+	io.write("Only OpenGL supported. Use renderingAPI = \"PV_RENDERING_API_OPENGL\"")
 end
 
 --[[
@@ -62,6 +64,23 @@ Window					| PV_PLATFORM_WINDOWS
 linux					| PV_PLATFORM_LINUX
 ]]--
 platform = "PV_PLATFORM_WINDOWS"
+
+--[[
+Windowing API supprted  | windowingAPI
+--------------------------------------
+Win32					| PV_WINDOWING_API_WIN32 -- Dosen't support imgui viewport and can be only used if PV_PLATFORM_WINDOWS
+X11						| PV_WINDOWING_API_X11	 -- Dosen't support imgui viewport and can be only used if PV_PLATFORM_LINUX
+GLFW					| PV_WINDOWING_API_GLFW  -- Cross platform and support imgui viewport
+]]--
+windowingAPI = "PV_WINDOWING_API_GLFW"
+
+if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
+	io.write("Cannot use Win32 for Linux")
+end
+
+if (windowingAPI == "PV_WINDOWING_API_X11" and platform == "PV_PLATFORM_WINDOWS") then
+	io.write("Cannot use X11 for Windows")
+end
 
 project "PrevEngine"
     location "PrevEngine"
@@ -76,6 +95,23 @@ project "PrevEngine"
         "%{prj.name}/src/**.cpp"
     }
 	
+	if (windowingAPI == "PV_WINDOWING_API_GLFW") then
+		removefiles {
+			"%{prj.name}/src/platform/windows/windowswindow.cpp",
+			"%{prj.name}/src/platform/windows/windowswindow.h",
+			
+			"%{prj.name}/src/platform/windows/imguiwindowsinit.cpp",
+			"%{prj.name}/src/platform/windows/imguiwindowsinit.h",
+			
+			"%{prj.name}/src/platform/linux/linuxwindow.cpp",
+			"%{prj.name}/src/platform/linux/linuxwindow.h",
+		}
+		
+		links {
+			"GLFW"
+		}
+	end
+	
     includedirs {
         "%{prj.name}/src",
 		"%{IncludeDir.GLAD}",
@@ -83,6 +119,7 @@ project "PrevEngine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityx}",
 		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.glfw}",
 		"%{IncludeDir.lua}"
     }
 	
@@ -103,10 +140,15 @@ project "PrevEngine"
 			error("Can's use directx on linux")
 		end
 		
+		if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
+			error("Can't use win32 on linux")
+		end
+		
 		defines {
             platform,
-            "PV_BUILD_LIB",
+			windowingAPI,
 			renderingAPI,
+            "PV_BUILD_LIB",
 			"PV_ENABLE_ASSERTS"
 		}
 		
@@ -128,9 +170,14 @@ project "PrevEngine"
         staticruntime "On"
         systemversion "latest"
 
+		if (windowingAPI == "PV_WINDOWING_API_X11" and platform == "PV_PLATFORM_WINDOWS") then
+			error("Can't use x11 on windows")
+		end
+		
         defines {
             platform,
 			renderingAPI,
+			windowingAPI,
             "PV_BUILD_LIB",
 			"PV_ENABLE_ASSERTS",
 			"_CRT_SECURE_NO_WARNINGS"
@@ -189,7 +236,8 @@ project "Sandbox"
 		systemversion "latest"
 
 		defines {
-            platform
+            platform,
+			windowingAPI
 		}
 		
 		libdirs { os.findlib("X11") }
@@ -208,6 +256,7 @@ project "Sandbox"
 
         defines {
             platform,
+			windowingAPI,
 			"_CRT_SECURE_NO_WARNINGS"
         }
 		
