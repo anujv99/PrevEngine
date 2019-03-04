@@ -30,13 +30,11 @@ IncludeDir["GLAD"] 	= "PrevEngine/vendor/GLAD/include"
 IncludeDir["ImGui"] = "PrevEngine/vendor/ImGui"
 IncludeDir["glm"] 	= "PrevEngine/vendor/glm/glm"
 IncludeDir["Box2D"] = "PrevEngine/vendor/Box2D"
-IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/glm"
 include "PrevEngine/vendor/Box2D"
-include "PrevEngine/vendor/glfw"
 
 -- Used by both
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
@@ -73,6 +71,14 @@ X11						| PV_WINDOWING_API_X11	 -- Dosen't support imgui viewport and can be on
 GLFW					| PV_WINDOWING_API_GLFW  -- Cross platform and support imgui viewport
 ]]--
 windowingAPI = "PV_WINDOWING_API_GLFW"
+if (windowingAPI == "PV_WINDOWING_API_X11" then
+	error("X11 currently not supported")
+end
+
+if (windowingAPI == "PV_WINDOWING_API_GLFW") then
+IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
+include "PrevEngine/vendor/glfw"
+end
 
 if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
 	io.write("Cannot use Win32 for Linux")
@@ -110,6 +116,11 @@ project "PrevEngine"
 		links {
 			"GLFW"
 		}
+		
+		includedirs {
+			"%{IncludeDir.glfw}",
+		}
+		
 	else
 		removefiles {
 			"%{prj.name}/src/platform/glfw/**.*",
@@ -123,7 +134,6 @@ project "PrevEngine"
 		"%{IncludeDir.glm}",
 		"%{IncludeDir.entityx}",
 		"%{IncludeDir.Box2D}",
-		"%{IncludeDir.glfw}",
 		"%{IncludeDir.lua}"
     }
 	
@@ -197,15 +207,15 @@ project "PrevEngine"
 		pchsource "PrevEngine/src/pch.cpp"
 		
     filter "configurations:Debug"
-        defines "PV_DEBUG"
+        defines {"PV_DEBUG"}
         symbols "On"
 
     filter "configurations:Release"
-	    defines "PV_RELEASE"
+	    defines {"PV_RELEASE"}
 	    optimize "On"
 
 	filter "configurations:Distribute"
-		defines "PV_DIST"
+		defines {"PV_DIST"}
 		optimize "On"
 		
 project "Sandbox"
@@ -270,13 +280,13 @@ project "Sandbox"
 		pchsource "Sandbox/src/pch.cpp"
 	
 	filter "configurations:Debug"
-		defines "PV_DEBGU"
+		defines {"PV_DEBGU"}
 		symbols "On"
 
 	filter "configurations:Release"
-		defines "PV_RELEASE"
+		defines {"PV_RELEASE"}
 		optimize "On"
 
 	filter "configurations:Distribute"
-		defines "PV_DIST"
+		defines {"PV_DIST"}
 		optimize "On"

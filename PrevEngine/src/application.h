@@ -1,5 +1,9 @@
 #pragma once
+
+#if defined(PV_PLATFORM_WINDOWS) && defined(PV_DEBUG)
 #include "vld.h"
+#endif
+
 #include "engine/window.h"
 #include "api/api.h"
 
