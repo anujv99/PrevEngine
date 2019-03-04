@@ -22,6 +22,7 @@ static int s_IndexToChangeInBuffer			= 0;
 
 static Level		* s_Level				= nullptr;
 static LevelLayer	* s_LevelLayer			= nullptr;
+static LevelLayer	* s_FoodLayer			= nullptr;
 static SnakeNode	* s_HeadNode			= nullptr;
 static SnakeNode	* s_TailNode			= nullptr;
 
@@ -48,7 +49,7 @@ class RenderLayer : public Layer {
 public:
 	RenderLayer() {
 		m_GlobalModelMatrix = glm::mat4(1.0f);
-		m_GlobalModelMatrix = glm::translate(m_GlobalModelMatrix, glm::vec3(0));
+		m_GlobalModelMatrix = glm::translate(m_GlobalModelMatrix, glm::vec3(s_Tile.GetTilePosition(0, 0), 0.0f));
 		m_GlobalModelMatrix = glm::scale(m_GlobalModelMatrix, glm::vec3(s_Tile.GetTileSize(), 0.0f));
 		m_Shader = s_LevelLayer->GetShader();
 		m_Shader->UseShader();
@@ -67,7 +68,7 @@ private:
 class FoodLayer : public Layer {
 public:
 	FoodLayer() {
-		auto foodEntity = s_LevelLayer->GetEntityXLayer()->entities.create();
+		auto foodEntity = s_FoodLayer->GetEntityXLayer()->entities.create();
 		foodEntity.assign<components::Position>(glm::vec2(-1, -1));
 		foodEntity.assign<components::Scale>(s_Tile.GetTileSize());
 		foodEntity.assign<components::Renderable>();
@@ -97,15 +98,34 @@ private:
 	void IncreaseSnakeLength() {
 		SnakeNode * node = new SnakeNode();
 		node->m_NextNode = s_TailNode;
-		s_TailNode->m_TilePos = s_TailNode->m_TilePos + glm::vec2(-1, 0);
 		s_TailNode = node;
-
-		auto entity = s_LevelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(s_Tile.GetTilePosition(s_TailNode->m_TilePos.x, s_TailNode->m_TilePos.y));
-		entity.assign<components::Scale>(s_Tile.GetTileSize());
-		entity.assign<components::Renderable>();
-		s_TailNode->m_Entity = entity;
+		//s_TailNode->m_TilePos = s_TailNode->m_TilePos + glm::vec2(-1, 0);
+		s_TailNode->m_TilePos = s_TailNode->m_TilePos + (s_TailNode->m_TilePos - s_TailNode->m_NextNode->m_TilePos);
 		s_SnakeLength++;
+		/*
+		 *	Can be optimized in several ways:
+		 *	One way: If the length of the snake is large enough, then create 
+		 *			 a buffer to hold the nodes if the snake eats food. Then
+		 *			 when the snake is at the starting position i.e. when the
+		 *			 s_IndexToChangeInBuffer is 0 (might be different) then add
+		 *			 the node to the list.
+		 */
+		//if (s_SnakeLength < 20)
+			RecreateSnake();
+	}
+	void RecreateSnake() {
+		std::vector<float> allPos;
+		allPos.resize(s_SnakeLength * 2);
+		int i = 2 * s_SnakeLength - 1;
+		auto node = s_TailNode;
+		while (node != nullptr) {
+			allPos[i--] = node->m_TilePos.y;
+			allPos[i--] = node->m_TilePos.x;
+			node = node->m_NextNode;
+		}
+		s_InstancedBuffer->ReplaceData(0, allPos.size() * sizeof(float), &allPos[0]);
+		s_InstancedBuffer->SetNumerOfInstances(allPos.size() / 2);
+		s_IndexToChangeInBuffer = (sizeof(float) * allPos.size()) - (2 * sizeof(float));
 	}
 private:
 	FoodNode m_ActiveFood;
@@ -193,15 +213,8 @@ private:
 			tileIndex.y = s_MaxTiles.y - 1;
 		}
 
-		if (s_SnakeLength == 1) {
-			s_HeadNode->m_Entity.component<components::Position>()->position = s_Tile.GetTilePosition(tileIndex.x, tileIndex.y);
-			s_HeadNode->m_TilePos = tileIndex;
-			return;
-		}
-
 		s_HeadNode->m_NextNode = node;
 		s_HeadNode = node;
-		s_HeadNode->m_Entity.component<components::Position>()->position = s_Tile.GetTilePosition(tileIndex.x, tileIndex.y);
 		s_HeadNode->m_TilePos = tileIndex;
 		s_HeadNode->m_NextNode = nullptr;
 
@@ -244,53 +257,12 @@ void CreateSnakeEntity(LevelLayer * levelLayer) {
 
 		allTilePos.push_back(s_TailNode->m_TilePos.x);
 		allTilePos.push_back(s_TailNode->m_TilePos.y);
-		auto entity = levelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(tilePos);
-		entity.assign<components::Scale>(s_Tile.GetTileSize());
-		entity.assign<components::Renderable>();
-		s_TailNode->m_Entity = entity;
 		s_SnakeLength++;
 	}
 
 	s_InstancedBuffer->AppendData(sizeof(float) * allTilePos.size(), &allTilePos[0]);
 	s_InstancedBuffer->SetNumerOfInstances(allTilePos.size() / 2);
 	s_IndexToChangeInBuffer = (sizeof(float) * allTilePos.size()) - (2 * sizeof(float));
-}
-
-void CreateWalls(LevelLayer * levelLayer) {
-
-	//For vertical walls
-	{
-		//Left
-		Tiles tile(WALL_THICKNESS, s_WindowHeight);
-		auto entity = levelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(0, 0));
-		entity.assign<components::Scale>(tile.GetTileSize());
-		entity.assign<components::Collision>(b2_staticBody, 0.0, 1.0);
-
-		//Right
-		entity = levelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(int(s_WindowWidth / WALL_THICKNESS) - 1, 0));
-		entity.assign<components::Scale>(tile.GetTileSize());
-		entity.assign<components::Collision>(b2_staticBody, 0.0, 1.0);
-	}
-
-	//For horizontal walls
-	{
-		//Bottom
-		Tiles tile(s_WindowWidth, WALL_THICKNESS);
-		auto entity = levelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(0, 0));
-		entity.assign<components::Scale>(tile.GetTileSize());
-		entity.assign<components::Collision>(b2_staticBody, 0.0, 1.0);
-
-		//Top
-		entity = levelLayer->GetEntityXLayer()->entities.create();
-		entity.assign<components::Position>(tile.GetTilePosition(0, int(s_WindowHeight / WALL_THICKNESS) - 1));
-		entity.assign<components::Scale>(tile.GetTileSize());
-		entity.assign<components::Collision>(b2_staticBody, 0.0, 1.0);
-	}
-
 }
 
 void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath) {
@@ -302,9 +274,13 @@ void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath)
 	s_InstancedBuffer = InstancedBuffer::Create(10000 * 2 * sizeof(float));
 	ReadConfigFile(configFilePath);
 
-	const Shader * shader = ShaderManager::LoadShader("SnakeShader", 
+	const Shader * shader = ShaderManager::LoadShader("SnakeShader",
 													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.vert").c_str(),
 													  (Window::GetExePath() + "../../../Sandbox/res/Shaders/instshader.frag").c_str());
+
+	const Shader * foodShader = ShaderManager::LoadShader("FoodShader",
+														  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.vert").c_str(),
+														  (Window::GetExePath() + "../../../Sandbox/res/Shaders/shader.frag").c_str());
 	
 	s_WindowWidth = app->GetApplicationInstance()->GetWindow().GetWidth();
 	s_WindowHeight = app->GetApplicationInstance()->GetWindow().GetHeight();
@@ -315,11 +291,13 @@ void SnakeGame::CreateSnake(prev::Application * app, std::string configFilePath)
 	s_LevelLayer->SetShader(shader);
 
 	CreateSnakeEntity(s_LevelLayer);
-	//CreateWalls(s_LevelLayer);
-
-	s_LevelLayer->GetEntityXLayer()->AddSystem<systems::RenderSystem>();
 
 	s_LevelLayer->Configure();
+
+	s_FoodLayer = s_Level->CreateNewLevelLayer(false);
+	s_FoodLayer->SetShader(foodShader);
+	s_FoodLayer->GetEntityXLayer()->AddSystem<systems::RenderSystem>();
+	s_FoodLayer->Configure();
 
 	app->PushLayer(new MovementLayer());
 	app->PushLayer(new FoodLayer());
