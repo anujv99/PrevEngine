@@ -33,7 +33,6 @@ IncludeDir["Box2D"] = "PrevEngine/vendor/Box2D"
 
 include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
-include "PrevEngine/vendor/glm"
 include "PrevEngine/vendor/Box2D"
 
 -- Used by both
@@ -76,8 +75,12 @@ if (windowingAPI == "PV_WINDOWING_API_X11") then
 end
 
 if (windowingAPI == "PV_WINDOWING_API_GLFW") then
-IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
-include "PrevEngine/vendor/glfw"
+	IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
+	include "PrevEngine/vendor/glfw"
+end
+
+if (platform == "PV_PLATFORM_WINDOWS") then
+	include "PrevEngine/vendor/glm"
 end
 
 if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
