@@ -1,6 +1,6 @@
 sudo: true
 language: cpp
-compiler: g++
+compiler: clang
 branches:
   only:
   - master
