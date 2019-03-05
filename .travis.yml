@@ -1,4 +1,5 @@
 sudo: true
+os: windows
 language: cpp
 compiler: clang
 branches:
