@@ -60,7 +60,7 @@ Platform supported		| platform
 Window					| PV_PLATFORM_WINDOWS
 linux					| PV_PLATFORM_LINUX
 ]]--
-platform = "PV_PLATFORM_LINUX"
+platform = "PV_PLATFORM_WINDOWS"
 
 --[[
 Windowing API supprted  | windowingAPI
