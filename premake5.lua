@@ -176,8 +176,7 @@ project "PrevEngine"
 		}
 
 		removefiles {
-			"%{prj.name}/src/platform/windows/*",
-			"%{prj.name}/src/api/DirectX/*"
+			"%{prj.name}/src/platform/windows/*"
 		}
 		
 		pchheader "pch.h"

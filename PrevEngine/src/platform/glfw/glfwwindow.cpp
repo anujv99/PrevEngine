@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "glfwwindow.h"
 
+#include <libgen.h>
+
 namespace prev {
 
 	//Referenced from The Cherno Hazel Engine https://github.com/TheCherno/Hazel/
@@ -31,7 +33,7 @@ namespace prev {
 	}
 
 	std::string Window::m_ExePath;
-
+#ifdef PV_PLATFORM_WINDOWS
 	std::string Window::GetExePath() {
 		if (m_ExePath.size() != 0) {
 			return m_ExePath;
@@ -42,6 +44,12 @@ namespace prev {
 		std::string spath = ws2s(std::wstring(path));
 		return spath.substr(0, spath.find_last_of("\\") + 1);
 	}
+#else
+	std::string Window::GetExePath() {
+		return "";
+	}
+#endif
+
 
 	GlfwWindow::GlfwWindow(const WindowProps & props) {
 		PV_CORE_TRACE("Creating GLFW window [Title = %s] [Width = %d] [Height = %d]", props.Title.c_str(), props.Width, props.Height);
