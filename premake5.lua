@@ -48,7 +48,7 @@ Rendering API supported	 | renderingAPI
 DirectX 				 | PV_RENDERING_API_DIRECTX // currently not supported
 OpenGL					 | PV_RENDERING_API_OPENGL
 ]]--
-renderingAPI = "PV_RENDERING_API_OPENGL"
+renderingAPI = "PV_RENDERING_API_DIRECTX"
 
 if (renderingAPI ~= "PV_RENDERING_API_OPENGL") then
 	io.write("Only OpenGL supported. Use renderingAPI = \"PV_RENDERING_API_OPENGL\"")
