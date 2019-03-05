@@ -19,5 +19,5 @@ before_script:
   - tar -xf premake.tar.gz
 
 script:
-  - ./premake5 gmake
+  - premake5 gmake
   - make
