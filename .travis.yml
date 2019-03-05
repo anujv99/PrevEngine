@@ -1,7 +1,6 @@
 sudo: true
 language: cpp
 compiler: g++
-install: export CXX="g++-5"
 branches:
   only:
   - master
@@ -13,7 +12,6 @@ addons:
     pakages:
     - make
     - libopengl32
-    - g++-5
 
 before_script:
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-linux.tar.gz -O premake.tar.gz
