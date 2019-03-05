@@ -17,7 +17,8 @@ addons:
 before_script:
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-windows.zip -O premake.zip
   - unzip premake.zip
+  - ls
 
 script:
-  - premake5 gmake
+  - .\premake5 gmake
   - make
