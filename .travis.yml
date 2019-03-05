@@ -20,5 +20,5 @@ before_script:
   - ls
 
 script:
-  - .\premake5 gmake
+  - ./premake5.exe gmake
   - make
