@@ -18,7 +18,9 @@ before_script:
   - wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-windows.zip -O premake.zip
   - unzip premake.zip
   - ls
-
+  - wget https://nchc.dl.sourceforge.net/project/gnuwin32/make/3.81/make-3.81-bin.zip -O make.zip
+  - unzip make.zip
+  - move ./bin/make.exe ./
 script:
   - ./premake5.exe gmake
-  - make
+  - ./make.exe
