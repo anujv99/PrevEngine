@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "glfwwindow.h"
 
-#include <libgen.h>
-
 namespace prev {
 
 	//Referenced from The Cherno Hazel Engine https://github.com/TheCherno/Hazel/
