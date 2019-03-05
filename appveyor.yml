@@ -1,0 +1,17 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+clone_folder: c:\prevengine
+before_build:
+- ps: >-
+    git submodule update --init --recursive
+
+    wget https://github.com/premake/premake-core/releases/download/v5.0.0-alpha13/premake-5.0.0-alpha13-windows.zip -O premake.zip
+
+    Expand-Archive .\premake.zip -DestinationPath ./
+
+    ls
+
+    .\premake5 "vs2017"
+build:
+  project: PrevEngine.sln
+  verbosity: minimal
