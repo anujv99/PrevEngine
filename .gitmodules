@@ -16,3 +16,6 @@
 [submodule "PrevEngine/vendor/glfw"]
 	path = PrevEngine/vendor/glfw
 	url = https://github.com/preversewharf45/glfw
+[submodule "PrevEngine/vendor/stb"]
+	path = PrevEngine/vendor/stb
+	url = https://github.com/preversewharf45/stb
