@@ -1,4 +1,4 @@
-GCC_PATH = "" --provide gcc path if not added ni path
+GCC_PATH = "" --provide gcc path if not added in path
 
 local gcc = premake.tools.gcc
 gcc.tools = {
