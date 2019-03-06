@@ -1,5 +1,9 @@
 version: 1.0.{build}
 image: Visual Studio 2017
+configuration:
+- Debug
+- Release
+- Distribute
 clone_folder: c:\prevengine
 before_build:
 - ps: >-
