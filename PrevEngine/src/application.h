@@ -1,6 +1,5 @@
 #pragma once
 
-#include "vld.h"
 #include "engine/window.h"
 #include "api/api.h"
 
