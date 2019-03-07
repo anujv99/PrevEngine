@@ -1,4 +1,4 @@
- #include "pch.h"
+#include "pch.h"
 #include "application.h"
 #include "essentials/timer.h"
 #include "imgui/imguilayer.h"
@@ -32,7 +32,7 @@ namespace prev {
 		PushLayer(API::Create());
 		b2DebugDraw = new Box2DDebugLayer();
 		PushOverlay(b2DebugDraw);
-		PushOverlay(new ImGuiLayer());
+		//PushOverlay(new ImGuiLayer());
 
 		uint32 flags = 0;
 		flags += b2Draw::e_shapeBit;
@@ -79,6 +79,10 @@ namespace prev {
 
 	Application * Application::GetApplicationInstance() {
 		return s_Instance;
+	}
+
+	void Application::Shutdown() {
+		m_Running = false;
 	}
 
 	void Application::Run() {

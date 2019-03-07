@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vld.h"
 #include "engine/window.h"
 #include "api/api.h"
 
@@ -13,19 +14,20 @@ namespace prev {
 		Application(WindowProps winProps = WindowProps());
 		virtual ~Application();
 
+		void Shutdown();
 		void Run();
-
 		void OnEvent(Event &event);
 
 		void PushLayer(Layer * layer);
 		void PushOverlay(Layer * layer);
 		void PopLayer(Layer * layer);
 		void PopOverlay(Layer * layer);
+
 		//
 		b2Draw * GetB2Draw();
 		//
-		Window &GetWindow() const { return *m_Window; }
 
+		Window &GetWindow() const { return *m_Window; }
 		static Application * GetApplicationInstance();
 	private:
 		bool OnWindowClose(WindowCloseEvent &e);

@@ -1,18 +1,3 @@
-GCC_PATH = "" --provide gcc path if not added in path
-
-local gcc = premake.tools.gcc
-gcc.tools = {
-	cc = GCC_PATH .. "gcc",
-	cxx = GCC_PATH .."g++",
-	ar = GCC_PATH .. "ar"
-}
-
-function gcc.gettoolname(cfg, tool)
-	return gcc.tools[tool]
-end
-
---Finish Setting up gcc
-
 workspace "PrevEngine"
 	startproject "Sandbox"
     architecture "x64"
@@ -36,6 +21,7 @@ include "PrevEngine/vendor/GLAD"
 include "PrevEngine/vendor/ImGui"
 include "PrevEngine/vendor/Box2D"
 include "PrevEngine/vendor/stb"
+include "PrevEngine/vendor/glm"
 
 -- Used by both
 IncludeDir["entityx"] = "PrevEngine/vendor/entityx"
@@ -60,7 +46,6 @@ end
 Platform supported		| platform
 ----------------------------------
 Window					| PV_PLATFORM_WINDOWS
-linux					| PV_PLATFORM_LINUX
 ]]--
 platform = "PV_PLATFORM_WINDOWS"
 
@@ -68,29 +53,13 @@ platform = "PV_PLATFORM_WINDOWS"
 Windowing API supprted  | windowingAPI
 --------------------------------------
 Win32					| PV_WINDOWING_API_WIN32 -- Dosen't support imgui viewport and can be only used if PV_PLATFORM_WINDOWS
-X11						| PV_WINDOWING_API_X11	 -- Dosen't support imgui viewport and can be only used if PV_PLATFORM_LINUX
 GLFW					| PV_WINDOWING_API_GLFW  -- Cross platform and support imgui viewport
 ]]--
 windowingAPI = "PV_WINDOWING_API_GLFW"
-if (windowingAPI == "PV_WINDOWING_API_X11") then
-	error("X11 currently not supported")
-end
 
 if (windowingAPI == "PV_WINDOWING_API_GLFW") then
 	IncludeDir["glfw"] = "PrevEngine/vendor/glfw/include"
 	include "PrevEngine/vendor/glfw"
-end
-
-if (platform == "PV_PLATFORM_WINDOWS") then
-	include "PrevEngine/vendor/glm"
-end
-
-if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
-	io.write("Cannot use Win32 for Linux")
-end
-
-if (windowingAPI == "PV_WINDOWING_API_X11" and platform == "PV_PLATFORM_WINDOWS") then
-	io.write("Cannot use X11 for Windows")
 end
 
 project "PrevEngine"
@@ -113,9 +82,6 @@ project "PrevEngine"
 			
 			"%{prj.name}/src/platform/windows/imguiwindowsinit.cpp",
 			"%{prj.name}/src/platform/windows/imguiwindowsinit.h",
-			
-			"%{prj.name}/src/platform/linux/linuxwindow.cpp",
-			"%{prj.name}/src/platform/linux/linuxwindow.h",
 		}
 		
 		links {
@@ -151,47 +117,10 @@ project "PrevEngine"
 		"lua"
 	}
 
-	filter "system:linux"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-		
-		if (renderingAPI ~= "PV_RENDERING_API_OPENGL" and platform == "PV_PLATFORM_LINUX") then
-			error("Can's use directx on linux")
-		end
-		
-		if (windowingAPI == "PV_WINDOWING_API_WIN32" and platform == "PV_PLATFORM_LINUX") then
-			error("Can't use win32 on linux")
-		end
-		
-		defines {
-            platform,
-			windowingAPI,
-			renderingAPI,
-            "PV_BUILD_LIB",
-			"PV_ENABLE_ASSERTS"
-		}
-		
-		libdirs { os.findlib("X11") }
-
-		links {
-			"X11"
-		}
-
-		removefiles {
-			"%{prj.name}/src/platform/windows/*"
-		}
-		
-		pchheader "pch.h"
-
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
         systemversion "latest"
-
-		if (windowingAPI == "PV_WINDOWING_API_X11" and platform == "PV_PLATFORM_WINDOWS") then
-			error("Can't use x11 on windows")
-		end
 		
         defines {
             platform,
@@ -249,25 +178,6 @@ project "Sandbox"
 		"PrevEngine"
 	}
 	
-	filter "system:linux"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-
-		defines {
-            platform,
-			windowingAPI
-		}
-		
-		libdirs { os.findlib("X11") }
-
-		links {
-			"PrevEngine",
-			"X11"
-		}
-		
-		pchheader "pch.h"
-
 	filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"

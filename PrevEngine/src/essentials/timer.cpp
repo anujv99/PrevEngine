@@ -23,7 +23,6 @@ namespace prev {
 			}
 			m_FPS = 0;
 		}
-		
 	}
 
 	float Timer::GetTime() {

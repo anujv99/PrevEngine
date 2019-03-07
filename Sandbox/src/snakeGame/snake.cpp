@@ -111,7 +111,7 @@ private:
 		 *			 the node to the list.
 		 */
 		//if (s_SnakeLength < 20)
-			RecreateSnake();
+		RecreateSnake();
 	}
 	void RecreateSnake() {
 		std::vector<float> allPos;
@@ -172,6 +172,7 @@ private:
 		while (node->m_NextNode != nullptr) {
 			if (headPos == node->m_TilePos) {
 				PV_ERROR("GAME OVER");
+				Application::GetApplicationInstance()->Shutdown();
 			}
 			node = node->m_NextNode;
 		}
