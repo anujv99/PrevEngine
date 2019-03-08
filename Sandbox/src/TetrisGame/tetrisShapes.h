@@ -10,9 +10,9 @@ namespace shapes {
 		friend void CreateShapes();
 	private:
 		static void CreateShape() {
-			m_Shape[1].m_Offset = { 0,-1 };
-			m_Shape[2].m_Offset = { 1, 1 };
-			m_Shape[3].m_Offset = { 0,-1 };
+			m_Shape[1].m_Offset = { 1, 0 };
+			m_Shape[2].m_Offset = { 0, 1 };
+			m_Shape[3].m_Offset = {-1, 0 };
 			m_StartIndex		= { 4, 1 };
 		}
 	public:
@@ -24,14 +24,28 @@ namespace shapes {
 		friend void CreateShapes();
 	private:
 		static void CreateShape() {
-			m_Shape[1].m_Offset = { 0,-1 };
-			m_Shape[2].m_Offset = { 0,-1 };
-			m_Shape[3].m_Offset = {-1, 0 };
+			m_Shape[1].m_Offset = { 0,-1 }; // 1, 0 || 0, 1 || -1, 0
+			m_Shape[2].m_Offset = { 0,-1 };	// 1, 0	|| 0, 1 || -1, 0
+			m_Shape[3].m_Offset = {-1, 0 };	// 0,-1	|| 1, 0 ||  0, 1
 			m_StartIndex		= { 6, 2 };
+			Rotate();
+			Rotate();
 		}
 	public:
 		static glm::vec2 m_StartIndex;
 		static Node m_Shape[4]; //index 0 is topmost
+	public:
+		static void Rotate() {
+			for (unsigned int i = 0; i < 4; i++) {
+				if (m_Shape[i].m_Offset.x != 0) {
+					m_Shape[i].m_Offset.y = m_Shape[i].m_Offset.x;
+					m_Shape[i].m_Offset.x = 0;
+				} else {
+					m_Shape[i].m_Offset.x = -m_Shape[i].m_Offset.y;
+					m_Shape[i].m_Offset.y = 0;
+				}
+			}
+		}
 	};
 
 	struct LReverse {

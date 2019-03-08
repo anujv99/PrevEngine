@@ -30,5 +30,5 @@ Window = {
 
 Log = {
 	IsLogEnabled = true,
-	ShowFPS = true -- Will not work if log is disabled
+	ShowFPS = false -- Will not work if log is disabled
 }

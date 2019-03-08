@@ -28,6 +28,10 @@ static prev::Level * s_Level						= nullptr;
 static prev::LevelLayer * s_TetrisLayer				= nullptr;
 static prev::InstancedBuffer * s_InstBuffer			= nullptr;
 
+static std::vector<int> s_Top						= {};
+static std::vector<int> s_Down						= {};
+static std::vector<int> s_Left						= {};
+static std::vector<int> s_Right						= {};
 static std::vector<glm::ivec2> s_CurrentShape		= {};
 static std::vector<float> s_ShapeInstBuffer			= {};
 
@@ -35,6 +39,17 @@ static void ReadConfigFile(const std::string & configFilePath);
 
 class TetrisLayer : public prev::Layer {
 public:
+	void PrintBoolArray() {
+		PV_INFO("-----------------------");
+		for (unsigned int i = 0; i < s_TileDivisionY; i++) {
+			std::string line;
+			for (unsigned int j = 0; j < s_TileDivisionX; j++) {
+				line += std::to_string(s_TetrisArray[j][i].m_IsActive) + " ";
+			}
+			PV_INFO("%s", line.c_str());
+		}
+		PV_INFO("-----------------------");
+	}
 	TetrisLayer() {
 		m_GlobalModelMatrix = glm::mat4(1.0f);
 		m_GlobalModelMatrix = glm::translate(m_GlobalModelMatrix, glm::vec3(s_Tile.GetTilePosition(0, 0), 0.0f));
@@ -52,6 +67,19 @@ public:
 			m_PassedTime = 0.0f;
 		}
 
+		if (prev::Input::IsKeyPressed(PV_KEYBOARD_KEY_A)) {
+			MoveShapeLeft();
+		}
+		if (prev::Input::IsKeyPressed(PV_KEYBOARD_KEY_D)) {
+			MoveShapeRight();
+		}
+		if (prev::Input::IsKeyPressed(PV_KEYBOARD_KEY_L)) {
+			PrintBoolArray();
+		}
+		if (prev::Input::IsKeyPressed(PV_KEYBOARD_KEY_L)) {
+			//TODO : Rotatation
+		}
+
 		s_TetrisLayer->GetShader()->UseShader();
 		prev::BaseRenderer::RenderQuadInstanced(s_InstBuffer);
 
@@ -61,26 +89,96 @@ public:
 			AddShape<shapes::Square>();
 		else if (prev::Input::IsKeyPressed(PV_KEYBOARD_KEY_I))
 			AddShape<shapes::LReverse>();
-
 	}
 private:
-	void MoveShapeDown() {
-		if (m_CanGoDown) {
+	void MoveShapeLeft() {
+		bool canMove = true;
+		for (auto & tile : s_Left) {
+			glm::ivec2 tilePos = s_CurrentShape[tile];
+			if (tilePos.x == 0) {
+				canMove = false;
+				break;
+			}
+			if (s_TetrisArray[tilePos.x - 1][tilePos.y].m_IsActive) {
+				canMove = false;
+				break;
+			}
+		}
+		if (canMove) {
 			int i = 0;
+			std::vector<glm::ivec2> tilesToActivate;
 			for (auto & tile : s_CurrentShape) {
-				s_TetrisArray[tile.x][tile.y + 1] = s_TetrisArray[tile.x][tile.y];
+				//s_TetrisArray[tile.x - 1][tile.y] = s_TetrisArray[tile.x][tile.y];
 				s_TetrisArray[tile.x][tile.y].m_IsActive = false;
-				tile.y += 1;
-
-				if (m_DownmostTile < tile.y)
-					m_DownmostTile = tile.y;
+				tile.x -= 1;
+				tilesToActivate.push_back(tile);
 
 				s_InstBuffer->ReplaceData(s_ShapeInstBuffer[i], 2 * sizeof(float), glm::value_ptr(glm::vec2(tile.x, s_TileDivisionY - 1 - tile.y)));
 				i++;
 			}
-			m_CanGoDown = CanGoDown();
-		} else {
-			//AddShape<shapes::L>();
+			for (auto & tileIndex : tilesToActivate) {
+				s_TetrisArray[tileIndex.x][tileIndex.y].m_IsActive = true;
+			}
+		}
+	}
+	void MoveShapeRight() {
+		bool canMove = true;
+		for (auto & tile : s_Right) {
+			glm::ivec2 tilePos = s_CurrentShape[tile];
+			if (tilePos.x == s_TileDivisionX - 1) {
+				canMove = false;
+				break;
+			}
+			if (s_TetrisArray[tilePos.x + 1][tilePos.y].m_IsActive) {
+				canMove = false;
+				break;
+			}
+		}
+		if (canMove) {
+			int i = 0;
+			std::vector<glm::ivec2> tilesToActivate;
+			for (auto & tile : s_CurrentShape) {
+				//s_TetrisArray[tile.x + 1][tile.y] = s_TetrisArray[tile.x][tile.y];
+				s_TetrisArray[tile.x][tile.y].m_IsActive = false;
+				tile.x += 1;
+				tilesToActivate.push_back(tile);
+
+				s_InstBuffer->ReplaceData(s_ShapeInstBuffer[i], 2 * sizeof(float), glm::value_ptr(glm::vec2(tile.x, s_TileDivisionY - 1 - tile.y)));
+				i++;
+			}
+			for (auto & tileIndex : tilesToActivate) {
+				s_TetrisArray[tileIndex.x][tileIndex.y].m_IsActive = true;
+			}
+		}
+	}
+	void MoveShapeDown() {
+		bool canMove = true;
+		for (auto & tile : s_Down) {
+			glm::ivec2 tilePos = s_CurrentShape[tile];
+			if (tilePos.y == s_TileDivisionY - 1) {
+				canMove = false;
+				break;
+			}
+			if (s_TetrisArray[tilePos.x][tilePos.y + 1].m_IsActive) {
+				canMove = false;
+				break;
+			}
+		}
+		if (canMove) {
+			int i = 0;
+			std::vector<glm::ivec2> tilesToActivate;
+			for (auto & tile : s_CurrentShape) {
+				//s_TetrisArray[tile.x][tile.y + 1] = s_TetrisArray[tile.x][tile.y];
+				s_TetrisArray[tile.x][tile.y].m_IsActive = false;
+				tile.y += 1;
+				tilesToActivate.push_back(tile);
+
+				s_InstBuffer->ReplaceData(s_ShapeInstBuffer[i], 2 * sizeof(float), glm::value_ptr(glm::vec2(tile.x, s_TileDivisionY - 1 - tile.y)));
+				i++;
+			}
+			for (auto & tileIndex : tilesToActivate) {
+				s_TetrisArray[tileIndex.x][tileIndex.y].m_IsActive = true;
+			}
 		}
 	}
 	template<typename T>
@@ -88,7 +186,6 @@ private:
 		glm::ivec2 index = T::m_StartIndex;
 		s_CurrentShape.clear();
 		s_ShapeInstBuffer.clear();
-		m_DownmostTile = 0;
 		for (auto node : T::m_Shape) {
 			index += node.m_Offset;
 
@@ -100,29 +197,51 @@ private:
 			s_InstBuffer->AppendData(2 * sizeof(float), glm::value_ptr(glm::vec2(index.x, s_TileDivisionY - 1 - index.y)));
 			s_InstBuffer->SetNumerOfInstances(s_InstBuffer->GetNumberOfInstances() + 1);
 
-			if (index.y > m_DownmostTile)
-				m_DownmostTile = index.y;
 		}
-		m_CanGoDown = CanGoDown();
+		CalculateExtremes();
 	}
-	bool CanGoDown() {
-		if (m_DownmostTile == s_TileDivisionY - 1)
-			return false;
-		int x = 0;
-		int prev_x = -1;
-		for (auto & tile : s_CurrentShape) {
-			x = tile.x;
-			if (prev_x != x) {
-				prev_x = x;
-				if (s_TetrisArray[tile.x][tile.y + 1].m_IsActive == true)
-					return false;
+	void CalculateExtremes() {
+		s_Left.clear();
+		s_Right.clear();
+		s_Top.clear();
+		s_Down.clear();
+		for (unsigned int i = 0; i < s_CurrentShape.size(); i++) {
+			bool isLeft = true;
+			bool isRight = true;
+			bool isTop = true;
+			bool isBottom = true;
+			auto nodeA = s_CurrentShape[i];
+			for (unsigned int j = 0; j < s_CurrentShape.size(); j++) {
+				if (i == j) continue;
+				auto nodeB = s_CurrentShape[j];
+
+				if (nodeA.y == nodeB.y) {
+					if (nodeA.x > nodeB.x)
+						isLeft = false;
+					else if (nodeA.x < nodeB.x)
+						isRight = false;
+				}
+
+				if (nodeA.x == nodeB.x) {
+					if (nodeA.y > nodeB.y)
+						isTop = false;
+					else if (nodeA.y < nodeB.y)
+						isBottom = false;
+				}
 			}
+
+			if (isLeft)
+				s_Left.push_back(i);
+			if (isRight)
+				s_Right.push_back(i);
+			if (isTop)
+				s_Top.push_back(i);
+			if (isBottom)
+				s_Down.push_back(i);
+
 		}
-		return true;
 	}
 private:
-	bool m_CanGoDown		= false;
-	int m_DownmostTile		= 0; // Of the current Shape
 	float m_PassedTime		= 0.0f;
 	const prev::Shader * m_Shader;
 	glm::mat4 m_GlobalModelMatrix;
