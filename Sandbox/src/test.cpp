@@ -3,6 +3,7 @@
 
 #include "lua/luascript.h"
 #include "snakeGame/snake.h"
+#include "TetrisGame/tetris.h"
 
 using namespace prev;
 
@@ -114,12 +115,15 @@ private:
 	glm::mat4 m_ModelMatrix;
 };
 
+#define CONFIG_FILE "../../../Sandbox/res/tetrisConfig.lua"
+
 int main() {
 	auto path = Window::GetExePath();
-	auto app = new Application(ReadWindowProperties(path + "../../../Sandbox/res/config.lua"));
-	SetVsync(path + "../../../Sandbox/res/config.lua", app);
+	auto app = new Application(ReadWindowProperties(path + CONFIG_FILE));
+	SetVsync(path + CONFIG_FILE, app);
 
-	SnakeGame::CreateSnake(app, path + "../../../Sandbox/res/snakeConfig.lua");
+	//SnakeGame::CreateSnake(app, path + CONFIG_FILE);
+	Tetris::CreateTetris(app, path + CONFIG_FILE);
 
 	//Add things here
 	/*--------------------------------------------*/
@@ -127,7 +131,8 @@ int main() {
 	/*--------------------------------------------*/
 	app->Run();
 
-	SnakeGame::ReleaseSnake();
+	Tetris::Release();
+	//SnakeGame::ReleaseSnake();
 
 	delete app;
 	return 0;

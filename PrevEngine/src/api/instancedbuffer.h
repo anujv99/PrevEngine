@@ -6,6 +6,7 @@ namespace prev {
 	public:
 		inline void SetNumerOfInstances(unsigned int numInstances) { m_NumberInstance = numInstances; }
 		inline unsigned int GetNumberOfInstances() const { return m_NumberInstance; }
+		inline unsigned int GetDataSize() const { return m_DataSize; }
 	public:
 		virtual void AppendData(unsigned long long int dataSize, const void * data) = 0;
 		//Every Size is in bytes (even offset)

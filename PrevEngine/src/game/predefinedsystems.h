@@ -10,6 +10,7 @@ namespace prev { namespace systems {
 	struct RenderSystem : entityx::System<RenderSystem> {
 		virtual void update(entityx::EntityManager & entities, entityx::EventManager & events, entityx::TimeDelta dt) override {
 			entities.each<components::Renderable>([](entityx::Entity entity, components::Renderable & renderable) -> void {
+				TIME_THIS_SCOPE_MS
 				glm::vec2 pos = entity.component<components::Position>()->position;
 				glm::vec2 scale = entity.component<components::Scale>()->scale;
 				const Shader * shader = ShaderManager::GetActiveShader();
