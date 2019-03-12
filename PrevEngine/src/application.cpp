@@ -32,7 +32,7 @@ namespace prev {
 		PushLayer(API::Create());
 		b2DebugDraw = new Box2DDebugLayer();
 		PushOverlay(b2DebugDraw);
-		//PushOverlay(new ImGuiLayer());
+		PushOverlay(new ImGuiLayer());
 
 		uint32 flags = 0;
 		flags += b2Draw::e_shapeBit;

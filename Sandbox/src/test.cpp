@@ -3,6 +3,7 @@
 
 #include "lua/luascript.h"
 #include "snakeGame/snake.h"
+#include "aStarAlgorithm/astart.h"
 
 using namespace prev;
 
@@ -98,7 +99,7 @@ public:
 				6, 6,
 				7, 7,
 				8, 8,
-				9, 9
+				9, 9,
 			};
 
 			m_Buffer->ReplaceData(0, sizeof(gg), gg);
@@ -117,20 +118,23 @@ private:
 #define CONFIG_FILE "../../../Sandbox/res/snakeConfig.lua"
 
 int main() {
-	auto path = Window::GetExePath();
-	auto app = new Application(ReadWindowProperties(path + CONFIG_FILE));
-	SetVsync(path + CONFIG_FILE, app);
+	//auto path = Window::GetExePath();
+	//auto app = new Application(ReadWindowProperties(path + CONFIG_FILE));
+	//SetVsync(path + CONFIG_FILE, app);
 
-	SnakeGame::CreateSnake(app, path + CONFIG_FILE);
+	//SnakeGame::CreateSnake(app, path + CONFIG_FILE);
+
+	AStar::Init(nullptr);
 
 	//Add things here
 	/*--------------------------------------------*/
 	//app->PushLayer(new TestLayer());
 	/*--------------------------------------------*/
-	app->Run();
 
-	SnakeGame::ReleaseSnake();
+	//app->Run();
 
-	delete app;
+	//SnakeGame::ReleaseSnake();
+
+	//delete app;
 	return 0;
 }
