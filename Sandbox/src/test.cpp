@@ -118,9 +118,9 @@ private:
 #define CONFIG_FILE "../../../Sandbox/res/snakeConfig.lua"
 
 int main() {
-	//auto path = Window::GetExePath();
-	//auto app = new Application(ReadWindowProperties(path + CONFIG_FILE));
-	//SetVsync(path + CONFIG_FILE, app);
+	auto path = Window::GetExePath();
+	auto app = new Application(ReadWindowProperties(path + CONFIG_FILE));
+	SetVsync(path + CONFIG_FILE, app);
 
 	//SnakeGame::CreateSnake(app, path + CONFIG_FILE);
 
@@ -131,7 +131,7 @@ int main() {
 	//app->PushLayer(new TestLayer());
 	/*--------------------------------------------*/
 
-	//app->Run();
+	app->Run();
 
 	//SnakeGame::ReleaseSnake();
 

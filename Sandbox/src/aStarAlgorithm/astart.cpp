@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "astart.h"
 
+#include "astarvisualizer.h"
+
 using namespace prev;
 
 //credits :- Sebastian Lague https://www.youtube.com/channel/UCmtyQOKKmrMVaKuRXz02jbQ
@@ -14,12 +16,7 @@ void RetracePath(AStarNode * startNode, AStarNode * endNode) {
 		currentNode = currentNode->m_Parent;
 	}
 
-	std::string pathString;
-	for (int i = path.size() - 1; i >= 0; i--) {
-		pathString += "[ " + std::to_string(path[i]->GetPos().x) + ", " + std::to_string(path[i]->GetPos().y) + " ]";
-	}
-
-	PV_TRACE(pathString.c_str());
+	AStarVisualizer::ShowPath(path);
 }
 
 static void GetShortestPath(AStarGrid & grid, glm::ivec2 startPos, glm::ivec2 endPos) {
